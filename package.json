@@ -2,6 +2,10 @@
   "name": "react-webpack-demo",
   "version": "1.0.0",
   "description": "A simple webpack-based React app with routing",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/react-webpack-demo.git"
+  },
   "main": "index.js",
   "scripts": {
     "start": "webpack serve --mode development",
