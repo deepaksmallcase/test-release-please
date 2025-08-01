@@ -1,0 +1,50 @@
+name: STAG Deployment
+
+on:
+  push:
+    tags:
+      - 'v*-stag*'
+
+jobs:
+  deploy-stag:
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+
+      - name: Run tests
+        run: npm test --if-present
+
+      - name: Build Docker image
+        run: |
+          docker build -t react-webpack-demo:stag-${{ github.sha }} .
+          echo "Built image: react-webpack-demo:stag-${{ github.sha }}"
+
+      - name: Deploy to STAG
+        run: |
+          echo "Deploying to STAG environment..."
+          echo "Tag: ${{ github.ref_name }}"
+          echo "Commit: ${{ github.sha }}"
+          # Add your actual deployment commands here
+          # Example: kubectl apply -f k8s/stag/
+
+      - name: Notify STAG deployment success
+        run: |
+          echo "✅ STAG deployment completed successfully!"
+          echo "Environment: STAG"
+          echo "Tag: ${{ github.ref_name }}"
+          echo "Commit: ${{ github.sha }}"
+          # Add Mattermost/Slack notification here 
