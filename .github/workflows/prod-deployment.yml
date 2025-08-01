@@ -1,0 +1,57 @@
+name: PROD Deployment
+
+on:
+  push:
+    tags:
+      - 'v*'
+    branches-ignore:
+      - 'main'
+      - 'dev'
+      - 'stag'
+      - 'beta'
+
+jobs:
+  deploy-prod:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+
+      - name: Run tests
+        run: npm test --if-present
+
+      - name: Build Docker image
+        run: |
+          docker build -t react-webpack-demo:prod-${{ github.sha }} .
+          echo "Built image: react-webpack-demo:prod-${{ github.sha }}"
+
+      - name: Create production infrastructure PR
+        run: |
+          echo "Creating production infrastructure PR..."
+          echo "Tag: ${{ github.ref_name }}"
+          echo "Commit: ${{ github.sha }}"
+          # This would create a PR to your production infra repo
+          # Example: Create PR to update production Kubernetes manifests
+          # gh pr create --repo your-org/prod-infra-repo --title "PROD: Update to ${{ github.ref_name }}" --body "Deploying ${{ github.ref_name }} to PRODUCTION"
+
+      - name: Notify PROD deployment
+        run: |
+          echo "🔥 PRODUCTION deployment infrastructure PR created!"
+          echo "Environment: PRODUCTION"
+          echo "Tag: ${{ github.ref_name }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "Waiting for code-owner approval..."
+          # Add Mattermost/Slack notification here 

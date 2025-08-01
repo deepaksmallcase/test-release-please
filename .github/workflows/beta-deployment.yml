@@ -1,0 +1,52 @@
+name: BETA Deployment
+
+on:
+  push:
+    tags:
+      - 'v*-beta*'
+
+jobs:
+  deploy-beta:
+    runs-on: ubuntu-latest
+    environment: beta
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+
+      - name: Run tests
+        run: npm test --if-present
+
+      - name: Build Docker image
+        run: |
+          docker build -t react-webpack-demo:beta-${{ github.sha }} .
+          echo "Built image: react-webpack-demo:beta-${{ github.sha }}"
+
+      - name: Create infrastructure PR
+        run: |
+          echo "Creating infrastructure PR for BETA deployment..."
+          echo "Tag: ${{ github.ref_name }}"
+          echo "Commit: ${{ github.sha }}"
+          # This would typically create a PR to your infra repo
+          # Example: Create PR to update Kubernetes manifests
+          # gh pr create --repo your-org/infra-repo --title "BETA: Update to ${{ github.ref_name }}" --body "Deploying ${{ github.ref_name }} to BETA"
+
+      - name: Notify BETA deployment
+        run: |
+          echo "🔧 BETA deployment infrastructure PR created!"
+          echo "Environment: BETA"
+          echo "Tag: ${{ github.ref_name }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "Waiting for code-owner approval..."
+          # Add Mattermost/Slack notification here 

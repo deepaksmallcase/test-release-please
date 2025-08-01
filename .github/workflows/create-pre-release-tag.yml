@@ -1,0 +1,52 @@
+name: Create Pre-release Tag
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to deploy'
+        required: true
+        default: 'main'
+        type: string
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        type: choice
+        options:
+          - dev
+          - stag
+          - beta
+      version:
+        description: 'Version tag (e.g., v1.2.3)'
+        required: true
+        type: string
+
+jobs:
+  create-tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch }}
+          fetch-depth: 0
+
+      - name: Create and push tag
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+          # Create tag
+          git tag ${{ github.event.inputs.version }}
+          
+          # Push tag
+          git push origin ${{ github.event.inputs.version }}
+          
+          echo "Created tag: ${{ github.event.inputs.version }}"
+          echo "Environment: ${{ github.event.inputs.environment }}"
+          echo "Branch: ${{ github.event.inputs.branch }}"
+
+      - name: Trigger deployment workflow
+        run: |
+          echo "Tag ${{ github.event.inputs.version }} created for ${{ github.event.inputs.environment }} environment"
+          echo "This will trigger the deployment workflow for ${{ github.event.inputs.environment }}" 
