@@ -1,6 +1,6 @@
-# 🚀 Deployment Process
+# 🚀 Deployment Process (Testing Setup)
 
-This document outlines the deployment process for different environments in the React Webpack Demo application.
+This document outlines the deployment process for different environments in the React Webpack Demo application. **This is a testing setup** - actual deployment commands are simulated for demonstration purposes.
 
 ## 📋 Environment Overview
 
@@ -23,21 +23,24 @@ This document outlines the deployment process for different environments in the 
 ### Step 2: Automated Deployment
 
 1. The tag will trigger the environment-specific CI workflow
-2. Deployment takes approximately **15 minutes**
-3. You'll receive notifications on the environment-specific channels:
+2. **Simulated deployment** takes approximately **2-3 minutes**
+3. You'll see deployment logs in the GitHub Actions tab
+4. In a real setup, you'd receive notifications on the environment-specific channels:
    - **DEV**: `sc-dev-investment-argocd`
    - **STAG**: `sc-stag-investment-argocd`
 
 ### Step 3: Deployment Notifications
 
-Look for the following notifications:
+Look for the following notifications in GitHub Actions logs:
 
 ```
-✅ DEV/STAG deployment completed successfully!
+✅ DEV/STAG deployment simulation completed!
 Environment: DEV/STAG
 Tag: v1.2.3-dev
 Commit: abc123def456
 ```
+
+**Note**: This is a simulation - in a real setup, you'd receive actual deployment notifications.
 
 ## 🧪 For BETA Environment
 
@@ -47,16 +50,19 @@ Same as DEV/STAG process, but select `beta` as the environment.
 
 ### Step 2: Infrastructure PR
 
-1. Once the build/image is created, a PR will be raised on the infrastructure repository
-2. The PR requires approval from a **code-owner**
-3. You'll be notified on the `sc-prod-investment-argocd` channel
+1. Once the build is completed, a **simulated PR** will be created for the infrastructure repository
+2. The PR would require approval from a **code-owner** in a real setup
+3. You'll see the PR details in the GitHub Actions logs
+4. In a real setup, you'd be notified on the `sc-prod-investment-argocd` channel
 
 ### Step 3: ArgoCD Sync
 
-After the infrastructure PR is merged:
-1. ArgoCD will sync the changes
-2. You'll receive an ArgoCD sync notification
-3. Deployment will be live in the BETA environment
+After the infrastructure PR is merged (in a real setup):
+1. ArgoCD would sync the changes
+2. You'd receive an ArgoCD sync notification
+3. Deployment would be live in the BETA environment
+
+**Note**: This is simulated - you'll see the sync details in GitHub Actions logs.
 
 ## 🔥 For PRODUCTION Environment
 
@@ -81,20 +87,24 @@ After the infrastructure PR is merged:
 ### Step 4: Production Deployment
 
 1. The tag triggers the production CI workflow
-2. Production builds are created
-3. You'll be notified on the `sc-prod-investment-argocd` channel
+2. **Simulated production builds** are created
+3. You'll see the build details in GitHub Actions logs
+4. In a real setup, you'd be notified on the `sc-prod-investment-argocd` channel
 
 ### Step 5: Infrastructure Approval
 
-1. A PR will be created for production infrastructure changes
-2. Requires approval from a **code-owner**
-3. Once merged, changes go live in **5 minutes**
+1. A **simulated PR** will be created for production infrastructure changes
+2. Would require approval from a **code-owner** in a real setup
+3. You'll see the PR details in GitHub Actions logs
+4. In a real setup, once merged, changes would go live in **5 minutes**
 
 ### Step 6: Live Deployment
 
-1. ArgoCD syncs the changes
-2. You'll receive an ArgoCD sync notification
-3. Application is now live in production
+1. **Simulated ArgoCD sync** of the changes
+2. You'll see the sync details in GitHub Actions logs
+3. In a real setup, the application would be live in production
+
+**Note**: This is a simulation - you can see all the deployment steps in the GitHub Actions logs.
 
 ## 📝 Tag Naming Convention
 
@@ -121,7 +131,8 @@ After the infrastructure PR is merged:
 
 ## ⚠️ Important Notes
 
-1. **Code Owners**: Production deployments require code-owner approval
-2. **Rollback**: Each environment supports rollback procedures
-3. **Monitoring**: All deployments are monitored and logged
-4. **Security**: Production deployments have additional security checks 
+1. **Code Owners**: Production deployments would require code-owner approval in a real setup
+2. **Rollback**: Each environment would support rollback procedures in a real setup
+3. **Monitoring**: All deployments are logged in GitHub Actions
+4. **Security**: Production deployments would have additional security checks in a real setup
+5. **Testing Setup**: This is a simulation - actual deployment commands are replaced with echo statements 

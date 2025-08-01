@@ -28,18 +28,20 @@ jobs:
       - name: Run tests
         run: npm test --if-present
 
-      - name: Build Docker image
+      - name: Build for DEV
         run: |
-          docker build -t react-webpack-demo:dev-${{ github.sha }} .
-          echo "Built image: react-webpack-demo:dev-${{ github.sha }}"
-
-      - name: Deploy to DEV
-        run: |
-          echo "Deploying to DEV environment..."
+          echo "Building for DEV environment..."
           echo "Tag: ${{ github.ref_name }}"
           echo "Commit: ${{ github.sha }}"
-          # Add your actual deployment commands here
-          # Example: kubectl apply -f k8s/dev/
+          echo "Build completed successfully for DEV!"
+
+      - name: Simulate DEV Deployment
+        run: |
+          echo "Simulating DEV deployment..."
+          echo "Environment: DEV"
+          echo "Tag: ${{ github.ref_name }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "✅ DEV deployment simulation completed!"
 
       - name: Notify DEV deployment success
         run: |
