@@ -14,7 +14,11 @@
     "test": "echo \"No tests specified\" && exit 0",
     "test:ci": "npm run test"
   },
-  "keywords": ["react", "webpack", "routing"],
+  "keywords": [
+    "react",
+    "webpack",
+    "routing"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
