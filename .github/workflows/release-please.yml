@@ -12,14 +12,18 @@ permissions:
 jobs:
   release-please:
     runs-on: ubuntu-latest
-    outputs:
-      release-notes: ${{ steps.release.outputs.release-notes }}
     steps:
-      - uses: google-github-actions/release-please-action@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Release Please
+        uses: google-github-actions/release-please-action@v4
         with: 
           token: ${{ secrets.GITHUB_TOKEN }}
           command: release-please
           release-type: node
-          package-name: release-please-action
+          package-name: react-webpack-demo
           default-branch: prod
-          config-file: .release-please-manifest.json
+          config-file: .release-please-config.json
