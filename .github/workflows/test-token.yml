@@ -1,0 +1,17 @@
+name: Test Token
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-token:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test Token
+        run: |
+          if [ -n "${{ secrets.RELEASE_PLEASE_TOKEN }}" ]; then
+            echo "✅ Token is set"
+            echo "Token length: ${#RELEASE_PLEASE_TOKEN}"
+          else
+            echo "❌ Token is not set"
+          fi 
