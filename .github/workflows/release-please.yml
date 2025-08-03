@@ -21,7 +21,7 @@ jobs:
       - name: Release Please
         uses: google-github-actions/release-please-action@v4
         with: 
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
           command: release-please
           release-type: node
           package-name: react-webpack-demo
