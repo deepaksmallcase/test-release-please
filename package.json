@@ -10,9 +10,15 @@
   "scripts": {
     "start": "webpack serve --mode development",
     "build": "webpack --mode production",
+    "build:dev": "webpack --mode development",
+    "build:stag": "webpack --mode production",
+    "build:prod": "webpack --mode production",
     "dev": "webpack serve --mode development --open",
     "test": "echo \"No tests specified\" && exit 0",
-    "test:ci": "npm run test"
+    "test:ci": "npm run test",
+    "release": "release-please",
+    "release:staging": "node scripts/create_pre_release_tag.js",
+    "tag:staging": "node scripts/create_pre_release_tag_cli.js"
   },
   "keywords": [
     "react",

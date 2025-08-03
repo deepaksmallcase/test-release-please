@@ -3,30 +3,25 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Home from './components/Home';
 import About from './components/About';
 
-const App = () => {
+// Test comment for Release Please setup verification
+function App() {
   return (
     <Router>
-      <div>
+      <div className="App">
         <nav>
-          <ul style={{ listStyle: 'none', padding: 0, display: 'flex', gap: '20px' }}>
-            <li>
-              <Link to="/" style={{ textDecoration: 'none', color: '#007bff' }}>Home</Link>
-            </li>
-            <li>
-              <Link to="/about" style={{ textDecoration: 'none', color: '#007bff' }}>About</Link>
-            </li>
+          <ul>
+            <li><Link to="/">Home</Link></li>
+            <li><Link to="/about">About</Link></li>
           </ul>
         </nav>
         
-        <main style={{ padding: '20px' }}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-          </Routes>
-        </main>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+        </Routes>
       </div>
     </Router>
   );
-};
+}
 
 export default App; 
