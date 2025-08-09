@@ -1,14 +1,7 @@
-name: PROD Deployment
+name: PROD Deployment (disabled)
 
 on:
-  push:
-    branches:
-      - prod
-    paths-ignore:
-      - 'CHANGELOG.md'
-      - '.release-please-manifest.json'
-      - 'package.json'
-      - 'package-lock.json'
+  workflow_dispatch:
 
 jobs:
   deploy-prod:
