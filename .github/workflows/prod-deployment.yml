@@ -1,14 +1,7 @@
-name: PROD Deployment
+name: PROD Deployment (disabled)
 
 on:
-  push:
-    tags:
-      - 'v*'
-    branches-ignore:
-      - 'main'
-      - 'dev'
-      - 'stag'
-      - 'beta'
+  workflow_dispatch:
 
 jobs:
   deploy-prod:
@@ -36,14 +29,14 @@ jobs:
       - name: Build for PRODUCTION
         run: |
           echo "Building for PRODUCTION environment..."
-          echo "Tag: ${{ github.ref_name }}"
+          echo "Branch: ${{ github.ref_name }}"
           echo "Commit: ${{ github.sha }}"
           echo "Build completed successfully for PRODUCTION!"
 
       - name: Simulate Production Infrastructure PR Creation
         run: |
           echo "Simulating production infrastructure PR creation..."
-          echo "Tag: ${{ github.ref_name }}"
+          echo "Branch: ${{ github.ref_name }}"
           echo "Commit: ${{ github.sha }}"
           echo "This would create a PR to your production infrastructure repository"
           echo "PR Title: PROD: Update to ${{ github.ref_name }}"
@@ -54,7 +47,7 @@ jobs:
         run: |
           echo "🔥 PRODUCTION deployment infrastructure PR created!"
           echo "Environment: PRODUCTION"
-          echo "Tag: ${{ github.ref_name }}"
+          echo "Branch: ${{ github.ref_name }}"
           echo "Commit: ${{ github.sha }}"
           echo "Waiting for code-owner approval..."
           # Add Mattermost/Slack notification here 

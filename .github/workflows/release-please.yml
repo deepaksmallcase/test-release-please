@@ -2,7 +2,7 @@ name: Release Please
 
 on:
   push:
-    branches: 
+    branches:
       - prod
 
 permissions:
@@ -18,12 +18,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Release Please
+      - name: Release Please (manifest mode)
         uses: google-github-actions/release-please-action@v4
-        with: 
-          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
-          command: release-please
-          release-type: node
-          package-name: react-webpack-demo
+        with:
+          token: ${{ secrets.PRE_RELEASE_TAG_ACTION }}
+          command: manifest
           default-branch: prod
-          config-file: .release-please-config.json
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json

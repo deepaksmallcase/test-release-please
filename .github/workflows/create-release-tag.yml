@@ -1,0 +1,10 @@
+name: Create Release Tag (disabled)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  noop:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "This workflow is disabled. Release Please now creates tags and GitHub Releases automatically."
