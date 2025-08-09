@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.2](https://github.com/deepaksmallcase/test-release-please/compare/v1.3.1...v1.3.2) (2025-08-09)
+
+
+### Miscellaneous Chores
+
+* setup release please (manifest mode, prod branch, tag CI) ([3ab0246](https://github.com/deepaksmallcase/test-release-please/commit/3ab024603fb6de8c7cb0ec57b9bf70d044390a3e))
+
 ## [1.3.1](https://github.com/deepaksmallcase/test-release-please/compare/v1.3.0...v1.3.1) (2025-08-03)
 
 
