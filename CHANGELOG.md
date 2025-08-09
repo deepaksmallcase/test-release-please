@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0](https://github.com/deepaksmallcase/test-release-please/compare/v1.3.2...v1.4.0) (2025-08-09)
+
+
+### Features
+
+* add welcome message and get started button to home page ([1f4fc96](https://github.com/deepaksmallcase/test-release-please/commit/1f4fc967ecc5b67a4bbe928552e705a49b11757a))
+* add welcome message and get started button to home page ([c859273](https://github.com/deepaksmallcase/test-release-please/commit/c859273dec4d018304b6f4fd7882edcab20f4454))
+
+
+### Reverts
+
+* remove welcome message and get started button from home page ([2fa707d](https://github.com/deepaksmallcase/test-release-please/commit/2fa707dc03c87d001a392f391e4e36745d8d8f27))
+
 ## [1.3.2](https://github.com/deepaksmallcase/test-release-please/compare/v1.3.1...v1.3.2) (2025-08-09)
 
 
