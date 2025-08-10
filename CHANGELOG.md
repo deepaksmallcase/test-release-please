@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.1](https://github.com/deepaksmallcase/test-release-please/compare/v1.4.0...v1.4.1) (2025-08-10)
+
+
+### Bug Fixes
+
+* force GitHub Actions to refresh workflow config - Release Please should only run on prod ([9caefa1](https://github.com/deepaksmallcase/test-release-please/commit/9caefa1ec70d5def4740d4b481aa4273b60667ba))
+
 ## [1.4.0](https://github.com/deepaksmallcase/test-release-please/compare/v1.3.2...v1.4.0) (2025-08-09)
 
 
