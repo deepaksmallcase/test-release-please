@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0](https://github.com/deepaksmallcase/test-release-please/compare/v1.4.1...v1.5.0) (2025-08-10)
+
+
+### Features
+
+* added new component deepak ([0449c06](https://github.com/deepaksmallcase/test-release-please/commit/0449c06c9b1fc5578a6dea459723ada167a00ca5))
+
 ## [1.4.1](https://github.com/deepaksmallcase/test-release-please/compare/v1.4.0...v1.4.1) (2025-08-10)
 
 
