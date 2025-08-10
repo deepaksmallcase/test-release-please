@@ -1,5 +1,6 @@
 name: Release Please
 
+# Force refresh: This workflow should ONLY run on prod branch pushes
 on:
   push:
     branches:
