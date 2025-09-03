@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0](https://github.com/deepaksmallcase/test-release-please/compare/v1.5.0...v1.6.0) (2025-09-03)
+
+
+### Features
+
+* **Deepak:** update component to display greeting and title ([4103972](https://github.com/deepaksmallcase/test-release-please/commit/410397221b3201ed1de7a1d093ad22d0e3a3deae))
+
+
+### Bug Fixes
+
+* **About:** update heading text in About component ([af178f5](https://github.com/deepaksmallcase/test-release-please/commit/af178f58646a38e89df64bcdcd5eaf9b36080535))
+
+
+### Refactoring
+
+* **Home:** update heading and message format in Home component ([6406c25](https://github.com/deepaksmallcase/test-release-please/commit/6406c257cccbe8e70f0c9ead8d2e69683bfcf34b))
+
 ## [1.5.0](https://github.com/deepaksmallcase/test-release-please/compare/v1.4.1...v1.5.0) (2025-08-10)
 
 
