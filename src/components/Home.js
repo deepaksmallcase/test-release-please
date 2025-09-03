@@ -3,9 +3,9 @@ import React from 'react';
 const Home = () => {
   return (
     <div>
-      <h1>Home changed now 2nd</h1>
+      <h1>Home changed now 3rd</h1>
       <div>Home section links</div>
-      <p>New feature: Welcome message added!</p>
+      <span>Created a feat branch and merge it to main</span>
       <button>Get Started</button>
     </div>
   );
