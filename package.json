@@ -1,6 +1,6 @@
 {
   "name": "react-webpack-demo",
-  "version": "1.4.1",
+  "version": "1.6.1-stag.0",
   "description": "A simple webpack-based React app with routing",
   "repository": {
     "type": "git",
@@ -17,8 +17,7 @@
     "test": "echo \"No tests specified\" && exit 0",
     "test:ci": "npm run test",
     "release": "release-please",
-    "release:staging": "node scripts/create_pre_release_tag.js",
-    "tag:staging": "node scripts/create_pre_release_tag_cli.js"
+    "release:pre": "node deployments/create_pre_release_tag_cli.js"
   },
   "keywords": [
     "react",
@@ -44,4 +43,4 @@
     "webpack-cli": "^5.0.1",
     "webpack-dev-server": "^4.11.1"
   }
-} 
+}
