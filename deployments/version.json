@@ -1,0 +1,13 @@
+{
+  "version": "2.0.0",
+  "description": "Deployments Pre-Release System",
+  "features": [
+    "Automated version calculation",
+    "Git tag management",
+    "Package.json version bumping",
+    "Environment-specific pre-release tags",
+    "GitHub Actions integration"
+  ],
+  "supportedEnvironments": ["dev", "stag", "beta"],
+  "lastUpdated": "2024-01-01"
+}

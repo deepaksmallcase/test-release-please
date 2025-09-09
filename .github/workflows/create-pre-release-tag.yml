@@ -1,53 +1,54 @@
-name: Create Pre-release Tag
+name: 'Auto Pre-release Tag on Main Branch'
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
     inputs:
-      branch:
-        description: 'Branch to deploy'
-        required: true
-        default: 'main'
-        type: string
-      environment:
-        description: 'Environment to deploy to'
-        required: true
+      deploymentEnv:
         type: choice
+        required: true
+        default: 'stag'
+        description: env to deploy on
         options:
           - dev
           - stag
           - beta
-      version:
-        description: 'Version tag (e.g., v1.2.3)'
-        required: true
-        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
   create-tag:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.inputs.branch }}
-          fetch-depth: 0
-          token: ${{ secrets.PRE_RELEASE_TAG_ACTION }}
+          fetch-depth: '0'
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create and push tag
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'package.json'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Configure Git
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          
-          # Create tag
-          git tag ${{ github.event.inputs.version }}
-          
-          # Push tag
-          git push origin ${{ github.event.inputs.version }}
-          
-          echo "Created tag: ${{ github.event.inputs.version }}"
-          echo "Environment: ${{ github.event.inputs.environment }}"
-          echo "Branch: ${{ github.event.inputs.branch }}"
 
-      - name: Trigger deployment workflow
+      - name: Auto-generate Pre-release Tag
         run: |
-          echo "Tag ${{ github.event.inputs.version }} created for ${{ github.event.inputs.environment }} environment"
-          echo "This will trigger the deployment workflow for ${{ github.event.inputs.environment }}" 
+          if [ "${{ github.event_name }}" = "push" ]; then
+            echo "🚀 Auto-creating pre-release tag for main branch deployment"
+            npm run release:pre stag
+          else
+            echo "🚀 Manual pre-release tag creation for ${{ github.event.inputs.deploymentEnv }}"
+            npm run release:pre ${{ github.event.inputs.deploymentEnv }}
+          fi 
