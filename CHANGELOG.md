@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0](https://github.com/deepaksmallcase/test-release-please/compare/v1.5.0...v1.6.0) (2025-09-10)
+
+
+### Features
+
+* add pre-release tagging support with release-please integration and new scripts ([b27ad23](https://github.com/deepaksmallcase/test-release-please/commit/b27ad23c5f89c0708bf19e9a07ebb67656463c97))
+* add pre-release tagging support with release-please integration… ([9b75c07](https://github.com/deepaksmallcase/test-release-please/commit/9b75c0713120383a234547bb51e996f4065be985))
+* **Deepak:** update component to display greeting and title ([4103972](https://github.com/deepaksmallcase/test-release-please/commit/410397221b3201ed1de7a1d093ad22d0e3a3deae))
+* Home changes ([d0054ee](https://github.com/deepaksmallcase/test-release-please/commit/d0054eea962aba8d5c31009f5fe4e23b3897c0bc))
+* implement automated pre-release deployment system with GitHub Actions ([9021936](https://github.com/deepaksmallcase/test-release-please/commit/9021936f960dab51d29236f1428c591d8941b6ef))
+* implement automated pre-release deployment system with GitHub Actions integration ([e1b16fa](https://github.com/deepaksmallcase/test-release-please/commit/e1b16faaac6721ea95bde1283cda92fbc0ac9dd8))
+
+
+### Bug Fixes
+
+* **About:** update heading text in About component ([af178f5](https://github.com/deepaksmallcase/test-release-please/commit/af178f58646a38e89df64bcdcd5eaf9b36080535))
+* runs on ([acb8a7e](https://github.com/deepaksmallcase/test-release-please/commit/acb8a7e85c03988ea2fefba5e6bdf9632386a94e))
+* runs on ([7d19920](https://github.com/deepaksmallcase/test-release-please/commit/7d1992023579cc9b8527d31dbe5594cce6d019f1))
+
 ## [1.5.0](https://github.com/deepaksmallcase/test-release-please/compare/v1.4.1...v1.5.0) (2025-08-10)
 
 
