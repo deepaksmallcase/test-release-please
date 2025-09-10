@@ -38,6 +38,8 @@ jobs:
         run: npm ci
 
       - name: Create Pre-release PR with Release-Please
+        env:
+          GITHUB_TOKEN: ${{ secrets.PRE_RELEASE_TAG_ACTION }}
         run: |
           echo "🚀 Creating pre-release PR for ${{ github.event.inputs.environment }} environment"
           echo "Branch: ${{ github.event.inputs.branch }}"
@@ -72,9 +74,12 @@ jobs:
           
           echo "✅ Created temporary release-please config"
           
-          # Create release PR using release-please
+          # Create release PR using release-please with token
           echo "🔄 Creating release PR with release-please..."
-          npx release-please release-pr --config-file=release-please-prerelease.json --repo-url=https://github.com/deepaksmallcase/test-release-please
+          npx release-please release-pr \
+            --config-file=release-please-prerelease.json \
+            --repo-url=https://github.com/deepaksmallcase/test-release-please \
+            --token=$GITHUB_TOKEN
           
           echo "✅ Pre-release PR created successfully!"
           echo "📋 Next steps:"
