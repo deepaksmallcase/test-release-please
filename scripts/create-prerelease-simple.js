@@ -45,9 +45,21 @@ function createPrereleaseTag() {
     console.log(`📋 Latest tag: ${latestTag}`);
 
     // Calculate next version
-    const [major, minor, patch] = latestTag.split('.');
-    const nextPatch = parseInt(patch) + 1;
-    const prereleaseVersion = `${major}.${minor}.${nextPatch}-${environment}.0`;
+   let prereleaseVersion;
+    
+    // Check if the latest tag is already a pre-release for the same environment
+    if (latestTag.includes(`-${environment}.`)) {
+      // Extract the pre-release number and increment it
+      const parts = latestTag.split(`-${environment}.`);
+      const baseVersion = parts[0];
+      const prereleaseNumber = parseInt(parts[1]) + 1;
+      prereleaseVersion = `${baseVersion}-${environment}.${prereleaseNumber}`;
+    } else {
+      // Regular version, bump patch and add pre-release
+      const [major, minor, patch] = latestTag.split('.');
+      const nextPatch = parseInt(patch) + 1;
+      prereleaseVersion = `${major}.${minor}.${nextPatch}-${environment}.0`;
+    }
     
     console.log(`📦 Next pre-release version: ${prereleaseVersion}`);
 
