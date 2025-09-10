@@ -43,6 +43,6 @@ jobs:
           echo "Branch: ${{ github.event.inputs.branch }}"
           
           # Run the pre-release script
-          npm run release:prerelease ${{ github.event.inputs.environment }} ${{ github.event.inputs.branch }}
+          npm run release:pre ${{ github.event.inputs.environment }}
           
           echo "✅ Pre-release tag created successfully for ${{ github.event.inputs.environment }} environment"
