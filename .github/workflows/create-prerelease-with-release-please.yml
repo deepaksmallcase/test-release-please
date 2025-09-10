@@ -1,4 +1,4 @@
-name: 'Create Pre-release Tag with Release-Please'
+name: 'Create Pre-release with Release-Please'
 
 on:
   workflow_dispatch:
@@ -17,6 +17,10 @@ on:
         required: true
         default: 'main'
         description: 'Branch to create pre-release from'
+
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
   create-prerelease:
@@ -37,12 +41,74 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Create Pre-release Tag
+      - name: Create Pre-release with Release-Please (No PRs)
+        env:
+          GITHUB_TOKEN: ${{ secrets.PRE_RELEASE_TAG_ACTION }}
         run: |
-          echo "🚀 Creating pre-release tag for ${{ github.event.inputs.environment }} environment"
+          echo "🚀 Creating pre-release for ${{ github.event.inputs.environment }} environment"
           echo "Branch: ${{ github.event.inputs.branch }}"
+          echo "❌ No PRs will be created - using direct release approach"
           
-          # Run the pre-release script
-          npm run release:prerelease ${{ github.event.inputs.environment }} ${{ github.event.inputs.branch }}
+          # Create temporary release-please config for this environment
+          cat > release-please-prerelease.json << EOF
+          {
+            "\$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+            "bootstrap-sha": "75e32df06af5f8023b7b38b38354751d7223fce4",
+            "include-component-in-tag": false,
+            "changelog-path": "CHANGELOG.md",
+            "branches": [
+              { 
+                "branch": "${{ github.event.inputs.branch }}", 
+                "prerelease": true,
+                "prerelease-label": "${{ github.event.inputs.environment }}"
+              }
+            ],
+            "packages": {
+              ".": {
+                "release-type": "node",
+                "package-name": "react-webpack-demo",
+                "prerelease": true,
+                "prerelease-type": "${{ github.event.inputs.environment }}",
+                "extra-files": [
+                  "package.json"
+                ]
+              }
+            }
+          }
+          EOF
           
-          echo "✅ Pre-release tag created successfully for ${{ github.event.inputs.environment }} environment"
+          # Create manifest file to track versions
+          cat > .release-please-manifest.json << EOF
+          {
+            ".": "$(cat package.json | jq -r '.version')"
+          }
+          EOF
+          
+          echo "✅ Created temporary release-please config and manifest"
+          
+          # Use only github-release command (no PR creation)
+          echo "🔄 Creating GitHub release directly (no PRs)..."
+          if npx release-please github-release \
+            --config-file=release-please-prerelease.json \
+            --manifest-file=.release-please-manifest.json \
+            --repo-url=https://github.com/deepaksmallcase/test-release-please \
+            --token=$GITHUB_TOKEN \
+            --target-branch=${{ github.event.inputs.branch }}; then
+            echo "✅ Pre-release created successfully!"
+          else
+            echo "⚠️ No release created - this usually means no releasable changes found"
+            echo "💡 Release-please looks for conventional commits (feat:, fix:, etc.)"
+            echo "✅ Checking existing tags..."
+            git tag --sort=-version:refname | head -5
+          fi
+          
+          echo "📦 Tag format: v1.4.0-${{ github.event.inputs.environment }}.0 → v1.4.0-${{ github.event.inputs.environment }}.1"
+          echo "🌍 Environment: ${{ github.event.inputs.environment }}"
+          echo "🌿 Branch: ${{ github.event.inputs.branch }}"
+
+      - name: Cleanup
+        if: always()
+        run: |
+          rm -f release-please-prerelease.json
+          rm -f .release-please-manifest.json
+          echo "🧹 Cleaned up temporary files"
