@@ -1,6 +1,6 @@
 {
   "name": "react-webpack-demo",
-  "version": "1.7.1-stag.2",
+  "version": "1.7.1-stag.4",
   "description": "A simple webpack-based React app with routing",
   "repository": {
     "type": "git",
