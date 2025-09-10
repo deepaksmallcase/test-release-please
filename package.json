@@ -17,8 +17,7 @@
     "test": "echo \"No tests specified\" && exit 0",
     "test:ci": "npm run test",
     "release": "release-please",
-    "release:pre": "node deployments/create_pre_release_tag_cli.js",
-    "release:prerelease": "node scripts/create-prerelease-simple.js"
+    "release:pre": "node deployments/create_pre_release_tag_cli.js"
   },
   "keywords": [
     "react",
