@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.0](https://github.com/deepaksmallcase/test-release-please/compare/v1.6.0...v1.7.0) (2025-09-09)
+
+
+### Features
+
+* implement automated pre-release deployment system with GitHub Actions ([9021936](https://github.com/deepaksmallcase/test-release-please/commit/9021936f960dab51d29236f1428c591d8941b6ef))
+* implement automated pre-release deployment system with GitHub Actions integration ([e1b16fa](https://github.com/deepaksmallcase/test-release-please/commit/e1b16faaac6721ea95bde1283cda92fbc0ac9dd8))
+
+
+### Miscellaneous Chores
+
+* bump version to 1.6.1-stag.0 ([b011f13](https://github.com/deepaksmallcase/test-release-please/commit/b011f131ef9c07dc272bd45ef1026aa192913316))
+* bump version to 1.6.1-stag.1 ([9dd8475](https://github.com/deepaksmallcase/test-release-please/commit/9dd84757508633d29442122c9c5f4e88ec2ae521))
+* update GitHub Actions workflow to include permissions and configure Git settings for pre-release tagging ([78d24a1](https://github.com/deepaksmallcase/test-release-please/commit/78d24a1ab3afecdd0bec861107113f73a3df9b89))
+
 ## [1.6.0](https://github.com/deepaksmallcase/test-release-please/compare/v1.5.0...v1.6.0) (2025-09-03)
 
 
