@@ -1,4 +1,4 @@
-name: 'Create Pre-release Tag with Release-Please'
+name: 'Create Pre-release with Release-Please'
 
 on:
   workflow_dispatch:
@@ -20,7 +20,7 @@ on:
 
 jobs:
   create-prerelease:
-    runs-on: ubuntu-latest
+    runs-on: arc-runner-set-frontend
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -37,12 +37,53 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Create Pre-release Tag
+      - name: Create Pre-release PR with Release-Please
         run: |
-          echo "🚀 Creating pre-release tag for ${{ github.event.inputs.environment }} environment"
+          echo "🚀 Creating pre-release PR for ${{ github.event.inputs.environment }} environment"
           echo "Branch: ${{ github.event.inputs.branch }}"
           
-          # Run the pre-release script
-          npm run release:pre ${{ github.event.inputs.environment }}
+          # Create temporary release-please config for this environment
+          cat > release-please-prerelease.json << EOF
+          {
+            "\$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+            "bootstrap-sha": "75e32df06af5f8023b7b38b38354751d7223fce4",
+            "include-component-in-tag": false,
+            "changelog-path": "CHANGELOG.md",
+            "branches": [
+              { 
+                "branch": "${{ github.event.inputs.branch }}", 
+                "prerelease": true,
+                "prerelease-label": "${{ github.event.inputs.environment }}"
+              }
+            ],
+            "packages": {
+              ".": {
+                "release-type": "node",
+                "package-name": "react-webpack-demo",
+                "prerelease": true,
+                "prerelease-type": "${{ github.event.inputs.environment }}",
+                "extra-files": [
+                  "package.json"
+                ]
+              }
+            }
+          }
+          EOF
           
-          echo "✅ Pre-release tag created successfully for ${{ github.event.inputs.environment }} environment"
+          echo "✅ Created temporary release-please config"
+          
+          # Create release PR using release-please
+          echo "🔄 Creating release PR with release-please..."
+          npx release-please release-pr --config-file=release-please-prerelease.json --repo-url=https://github.com/deepaksmallcase/test-release-please
+          
+          echo "✅ Pre-release PR created successfully!"
+          echo "📋 Next steps:"
+          echo "1. Review the created PR in GitHub"
+          echo "2. Merge the PR"
+          echo "3. The pre-release tag will be created automatically after merge"
+
+      - name: Cleanup
+        if: always()
+        run: |
+          rm -f release-please-prerelease.json
+          echo "🧹 Cleaned up temporary files"
