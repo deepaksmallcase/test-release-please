@@ -1,4 +1,4 @@
-# 🚀 Pre-Release Deployment Setup
+# 🚀 Manual Pre-Release Deployment Setup
 
 ## ✅ Cleanup Complete
 
@@ -25,29 +25,22 @@
 }
 ```
 
-## 🎯 Auto Pre-Release on Main Branch
+## 🎯 Manual Pre-Release Tag Creation
 
 ### GitHub Actions Workflow
 **File:** `.github/workflows/create-pre-release-tag.yml`
 
 **Triggers:**
-1. **Automatic:** When code is pushed to `main` branch
-2. **Manual:** Via GitHub Actions UI with environment selection
+- **Manual Only:** Via GitHub Actions UI with environment selection
 
 **Behavior:**
-- **Push to main:** Automatically creates `stag` pre-release tag
-- **Manual trigger:** Creates pre-release tag for selected environment (dev/stag/beta)
+- Creates pre-release tag for selected environment (dev/stag/beta)
+- Tag creation triggers corresponding deployment workflow on main branch
 
 ### Usage Examples
 
-**Automatic (when pushing to main):**
-```bash
-git push origin main
-# → Automatically creates v1.6.1-stag.0, v1.6.1-stag.1, etc.
-```
-
 **Manual (via GitHub Actions UI):**
-1. Go to Actions → "Auto Pre-release Tag on Main Branch"
+1. Go to Actions → "Manual Pre-release Tag Creation"
 2. Click "Run workflow"
 3. Select environment: dev/stag/beta
 4. Click "Run workflow"
@@ -66,36 +59,46 @@ npm run release:pre beta    # Creates beta pre-release
 - **New pre-release:** `v1.6.1-stag.0` (increments patch + adds environment)
 - **Next pre-release:** `v1.6.1-stag.1` (increments pre-release number)
 
-### Automated Process
-1. ✅ Fetches latest git tags
-2. ✅ Calculates next version automatically
-3. ✅ Updates `package.json` version
-4. ✅ Updates `package-lock.json`
-5. ✅ Commits changes with descriptive message
-6. ✅ Creates git tag
-7. ✅ Pushes tag to remote repository
+### Manual Process
+1. ✅ Go to GitHub Actions UI
+2. ✅ Select "Manual Pre-release Tag Creation"
+3. ✅ Choose environment (dev/stag/beta)
+4. ✅ System fetches latest git tags
+5. ✅ Calculates next version automatically
+6. ✅ Updates `package.json` version
+7. ✅ Updates `package-lock.json`
+8. ✅ Commits changes with descriptive message
+9. ✅ Creates git tag
+10. ✅ Pushes tag to remote repository
+11. ✅ **Tag triggers deployment workflow on main branch**
 
 ### Environment Support
-- **dev:** `v1.6.1-dev.0`, `v1.6.1-dev.1`, etc.
-- **stag:** `v1.6.1-stag.0`, `v1.6.1-stag.1`, etc.
-- **beta:** `v1.6.1-beta.0`, `v1.6.1-beta.1`, etc.
+- **dev:** `v1.6.1-dev.0`, `v1.6.1-dev.1`, etc. → Triggers DEV deployment
+- **stag:** `v1.6.1-stag.0`, `v1.6.1-stag.1`, etc. → Triggers STAG deployment
+- **beta:** `v1.6.1-beta.0`, `v1.6.1-beta.1`, etc. → Triggers BETA deployment
+
+### Deployment Workflows
+Your existing deployment workflows will automatically trigger:
+- **DEV Deployment:** Triggers on `v*-dev*` tags
+- **STAG Deployment:** Triggers on `v*-stag*` tags  
+- **BETA Deployment:** Triggers on `v*-beta*` tags
 
 ## 🎉 Benefits
 
-### ✅ Fully Automated
-- No manual version entry required
-- No interactive prompts
-- Works seamlessly with CI/CD
+### ✅ Manual Control
+- You decide when to create pre-release tags
+- No automatic triggers on main branch pushes
+- Full control over deployment timing
 
 ### ✅ Smart Versioning
 - Automatically increments versions
 - Handles pre-release numbering
 - Maintains semantic versioning
 
-### ✅ GitHub Integration
-- Triggers on main branch pushes
-- Manual override available
-- Proper git configuration
+### ✅ Main Branch Deployment
+- All deployments happen from main branch
+- No need for separate dev/stag/beta branches
+- Single source of truth
 
 ### ✅ Error Handling
 - Graceful handling of git conflicts
@@ -104,4 +107,4 @@ npm run release:pre beta    # Creates beta pre-release
 
 ## 🚀 Ready to Use!
 
-The system is now clean, automated, and ready for production use. Every push to the main branch will automatically create a staging pre-release tag, and you can manually create tags for other environments as needed.
+The system is now set up for manual pre-release tag creation. When you create a tag, it will automatically trigger the corresponding deployment workflow on the main branch. No separate branches needed!
