@@ -17,7 +17,12 @@
     { "type": "test", "section": "Tests", "hidden": true }
   ],
   "branches": [
-    { "branch": "prod" }
+    { "branch": "prod" },
+    { 
+      "branch": "main", 
+      "prerelease": true,
+      "prerelease-label": "stag"
+    }
   ],
   "packages": {
     ".": {
