@@ -74,6 +74,15 @@ function createPrereleaseTag() {
     console.log('📝 Updating package-lock.json...');
     execSync('npm i --package-lock-only --ignore-scripts', { stdio: 'inherit' });
 
+    // Configure git user (if not already set)
+    console.log('⚙️  Configuring git user...');
+    try {
+      execSync('git config user.name "github-actions[bot]"', { stdio: 'inherit' });
+      execSync('git config user.email "github-actions[bot]@users.noreply.github.com"', { stdio: 'inherit' });
+    } catch (configError) {
+      console.log('⚠️  Git user already configured or config failed');
+    }
+
     // Commit changes
     console.log('💾 Committing changes...');
     execSync('git add package.json package-lock.json', { stdio: 'inherit' });
