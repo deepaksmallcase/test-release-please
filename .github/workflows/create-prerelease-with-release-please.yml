@@ -41,12 +41,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Create Pre-release with Release-Please CLI
+      - name: Create Pre-release with Release-Please (No PRs)
         env:
           GITHUB_TOKEN: ${{ secrets.PRE_RELEASE_TAG_ACTION }}
         run: |
           echo "🚀 Creating pre-release for ${{ github.event.inputs.environment }} environment"
           echo "Branch: ${{ github.event.inputs.branch }}"
+          echo "❌ No PRs will be created - using direct release approach"
           
           # Create temporary release-please config for this environment
           cat > release-please-prerelease.json << EOF
@@ -76,28 +77,27 @@ jobs:
           }
           EOF
           
-          echo "✅ Created temporary release-please config"
+          # Create manifest file to track versions
+          cat > .release-please-manifest.json << EOF
+          {
+            ".": "$(cat package.json | jq -r '.version')"
+          }
+          EOF
           
-          # Step 1: Create/update release PR to calculate version
-          echo "🔄 Step 1: Creating release PR..."
-          npx release-please release-pr \
-            --config-file=release-please-prerelease.json \
-            --repo-url=https://github.com/deepaksmallcase/test-release-please \
-            --token=$GITHUB_TOKEN \
-            --target-branch=${{ github.event.inputs.branch }}
+          echo "✅ Created temporary release-please config and manifest"
           
-          echo "✅ Release PR created/updated"
-          
-          # Step 2: Create GitHub release (with error handling for duplicates)
-          echo "🔄 Step 2: Creating GitHub release..."
+          # Use only github-release command (no PR creation)
+          echo "🔄 Creating GitHub release directly (no PRs)..."
           if npx release-please github-release \
             --config-file=release-please-prerelease.json \
+            --manifest-file=.release-please-manifest.json \
             --repo-url=https://github.com/deepaksmallcase/test-release-please \
             --token=$GITHUB_TOKEN \
             --target-branch=${{ github.event.inputs.branch }}; then
             echo "✅ Pre-release created successfully!"
           else
-            echo "⚠️ Release may already exist or no changes to release"
+            echo "⚠️ No release created - this usually means no releasable changes found"
+            echo "💡 Release-please looks for conventional commits (feat:, fix:, etc.)"
             echo "✅ Checking existing tags..."
             git tag --sort=-version:refname | head -5
           fi
@@ -110,4 +110,5 @@ jobs:
         if: always()
         run: |
           rm -f release-please-prerelease.json
+          rm -f .release-please-manifest.json
           echo "🧹 Cleaned up temporary files"
