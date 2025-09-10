@@ -18,6 +18,10 @@ on:
         default: 'main'
         description: 'Branch to create pre-release from'
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   create-prerelease:
     runs-on: ubuntu-latest
@@ -37,11 +41,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Create Pre-release PR with Release-Please
+      - name: Create Pre-release with Release-Please CLI
         env:
           GITHUB_TOKEN: ${{ secrets.PRE_RELEASE_TAG_ACTION }}
         run: |
-          echo "🚀 Creating pre-release PR for ${{ github.event.inputs.environment }} environment"
+          echo "🚀 Creating pre-release for ${{ github.event.inputs.environment }} environment"
           echo "Branch: ${{ github.event.inputs.branch }}"
           
           # Create temporary release-please config for this environment
@@ -74,18 +78,23 @@ jobs:
           
           echo "✅ Created temporary release-please config"
           
-          # Create release PR using release-please with token
-          echo "🔄 Creating release PR with release-please..."
+          # Use release-please to create pre-release tag directly
+          echo "🔄 Creating pre-release tag with release-please..."
           npx release-please release-pr \
             --config-file=release-please-prerelease.json \
             --repo-url=https://github.com/deepaksmallcase/test-release-please \
-            --token=$GITHUB_TOKEN
+            --token=$GITHUB_TOKEN \
+            --target-branch=${{ github.event.inputs.branch }} && \
+          npx release-please github-release \
+            --config-file=release-please-prerelease.json \
+            --repo-url=https://github.com/deepaksmallcase/test-release-please \
+            --token=$GITHUB_TOKEN \
+            --target-branch=${{ github.event.inputs.branch }}
           
-          echo "✅ Pre-release PR created successfully!"
-          echo "📋 Next steps:"
-          echo "1. Review the created PR in GitHub"
-          echo "2. Merge the PR"
-          echo "3. The pre-release tag will be created automatically after merge"
+          echo "✅ Pre-release tag created successfully!"
+          echo "📦 Tag format: v1.4.0-${{ github.event.inputs.environment }}.0 → v1.4.0-${{ github.event.inputs.environment }}.1"
+          echo "🌍 Environment: ${{ github.event.inputs.environment }}"
+          echo "🌿 Branch: ${{ github.event.inputs.branch }}"
 
       - name: Cleanup
         if: always()
