@@ -37,6 +37,10 @@ async function main() {
   await runShellCommand('npm i --package-lock-only --ignore-scripts');
 
   logIntermediateStep('committing changes');
+  await runShellCommand("git config user.name 'github-actions[bot]'");
+  await runShellCommand(
+    "git config user.email 'github-actions[bot]@users.noreply.github.com'",
+  );
   await runShellCommand(`git add package.json package-lock.json`);
   await runShellCommand(`git commit -m "chore: bump version to ${newVersion}"`);
 
