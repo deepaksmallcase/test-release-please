@@ -28,24 +28,20 @@ async function getNewTagVersion(deploymentEnv) {
   );
   logIntermediateStep(`fetched latest tag ${latestTag} successfully.`);
 
-  const [majorVersion, minorVersion, patchVersion, preReleaseVersion] =
-    latestTag.split('.');
-
-  const isPreReleaseVersion =
-    patchVersion.includes(PreReleaseDeploymentEnvs.DEVELOPMENT) ||
-    patchVersion.includes(PreReleaseDeploymentEnvs.STAGING) ||
-    patchVersion.includes(PreReleaseDeploymentEnvs.BETA) ||
-    false;
-
   let newVersion;
-  if (isPreReleaseVersion) {
-    const patchVersionWithoutEnvName = patchVersion.split('-')[0];
-    const patchWithPreRelease = `${patchVersionWithoutEnvName}-${deploymentEnv}`;
-    const updatedPreReleaseVersion = Number(preReleaseVersion) + 1;
-    newVersion = `${majorVersion}.${minorVersion}.${patchWithPreRelease}.${updatedPreReleaseVersion}`;
+  
+  // Check if the latest tag is already a pre-release for the same environment
+  if (latestTag.includes(`-${deploymentEnv}.`)) {
+    // Extract the pre-release number and increment it
+    const parts = latestTag.split(`-${deploymentEnv}.`);
+    const baseVersion = parts[0];
+    const prereleaseNumber = parseInt(parts[1]) + 1;
+    newVersion = `${baseVersion}-${deploymentEnv}.${prereleaseNumber}`;
   } else {
-    const sanitizedPreReleaseTag = patchVersion.split('-')[0];
-    const updatedPatchVersion = Number(sanitizedPreReleaseTag) + 1;
+    // Regular version or different environment pre-release, bump patch and add pre-release
+    const [majorVersion, minorVersion, patchVersion] = latestTag.split('.');
+    const sanitizedPatchVersion = patchVersion.split('-')[0];
+    const updatedPatchVersion = Number(sanitizedPatchVersion) + 1;
     const patchWithPreRelease = `${updatedPatchVersion}-${deploymentEnv}`;
     newVersion = `${majorVersion}.${minorVersion}.${patchWithPreRelease}.0`;
   }
