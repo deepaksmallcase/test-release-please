@@ -1,0 +1,22 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "bootstrap-sha": "75e32df06af5f8023b7b38b38354751d7223fce4",
+  "include-component-in-tag": false,
+  "changelog-path": "CHANGELOG.md",
+  "branches": [
+    {
+      "branch": "main",
+      "prerelease": true,
+      "prerelease-label": "stag"
+    }
+  ],
+  "packages": {
+    ".": {
+      "release-type": "node",
+      "package-name": "react-webpack-demo",
+      "extra-files": [
+        "package.json"
+      ]
+    }
+  }
+}

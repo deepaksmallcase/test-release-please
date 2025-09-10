@@ -1,0 +1,48 @@
+name: 'Create Pre-release Tag with Release-Please'
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        required: true
+        default: 'stag'
+        description: 'Environment for pre-release'
+        options:
+          - dev
+          - stag
+          - beta
+      branch:
+        type: string
+        required: true
+        default: 'main'
+        description: 'Branch to create pre-release from'
+
+jobs:
+  create-prerelease:
+    runs-on: arc-runner-set-frontend
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch }}
+          fetch-depth: '0'
+          token: ${{ secrets.PRE_RELEASE_TAG_ACTION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'package.json'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Create Pre-release Tag
+        run: |
+          echo "🚀 Creating pre-release tag for ${{ github.event.inputs.environment }} environment"
+          echo "Branch: ${{ github.event.inputs.branch }}"
+          
+          # Run the pre-release script
+          npm run release:prerelease ${{ github.event.inputs.environment }} ${{ github.event.inputs.branch }}
+          
+          echo "✅ Pre-release tag created successfully for ${{ github.event.inputs.environment }} environment"
