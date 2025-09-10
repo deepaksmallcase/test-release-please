@@ -78,20 +78,30 @@ jobs:
           
           echo "✅ Created temporary release-please config"
           
-          # Use release-please to create pre-release tag directly
-          echo "🔄 Creating pre-release tag with release-please..."
+          # Step 1: Create/update release PR to calculate version
+          echo "🔄 Step 1: Creating release PR..."
           npx release-please release-pr \
-            --config-file=release-please-prerelease.json \
-            --repo-url=https://github.com/deepaksmallcase/test-release-please \
-            --token=$GITHUB_TOKEN \
-            --target-branch=${{ github.event.inputs.branch }} && \
-          npx release-please github-release \
             --config-file=release-please-prerelease.json \
             --repo-url=https://github.com/deepaksmallcase/test-release-please \
             --token=$GITHUB_TOKEN \
             --target-branch=${{ github.event.inputs.branch }}
           
-          echo "✅ Pre-release tag created successfully!"
+          echo "✅ Release PR created/updated"
+          
+          # Step 2: Create GitHub release (with error handling for duplicates)
+          echo "🔄 Step 2: Creating GitHub release..."
+          if npx release-please github-release \
+            --config-file=release-please-prerelease.json \
+            --repo-url=https://github.com/deepaksmallcase/test-release-please \
+            --token=$GITHUB_TOKEN \
+            --target-branch=${{ github.event.inputs.branch }}; then
+            echo "✅ Pre-release created successfully!"
+          else
+            echo "⚠️ Release may already exist or no changes to release"
+            echo "✅ Checking existing tags..."
+            git tag --sort=-version:refname | head -5
+          fi
+          
           echo "📦 Tag format: v1.4.0-${{ github.event.inputs.environment }}.0 → v1.4.0-${{ github.event.inputs.environment }}.1"
           echo "🌍 Environment: ${{ github.event.inputs.environment }}"
           echo "🌿 Branch: ${{ github.event.inputs.branch }}"
