@@ -92,13 +92,19 @@ jobs:
           echo "✅ Created release-please config and manifest"
           echo "🔄 Release-please will calculate next version automatically..."
           
+          # Debug: Check if there are any conventional commits
+          echo "🔍 Checking for conventional commits..."
+          git log --oneline --since="1 week ago" | head -10
+          
           # Let release-please handle version calculation and release creation
+          # Use --prerelease flag to force pre-release creation
           if npx release-please github-release \
             --config-file=release-please-prerelease.json \
             --manifest-file=.release-please-manifest.json \
             --repo-url=https://github.com/deepaksmallcase/test-release-please \
             --token=$GITHUB_TOKEN \
-            --target-branch=${{ github.event.inputs.branch }}; then
+            --target-branch=${{ github.event.inputs.branch }} \
+            --prerelease; then
             
             echo "✅ Release-please completed successfully!"
             
