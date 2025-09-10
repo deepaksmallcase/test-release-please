@@ -15,7 +15,7 @@ on:
 
 jobs:
   create-tag:
-    runs-on: arc-runner-set-frontend
+    runs-on: ubuntu-latest
     steps:
       - run: echo "Running create-pre-release-tag to deploy on ${{ github.event.inputs.deploymentEnv }}"
 
