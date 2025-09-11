@@ -145,6 +145,9 @@ jobs:
             
             # Now create the GitHub release
             echo "🔄 Step 3: Creating GitHub release..."
+            echo "🏷️ About to create tag: $newTag"
+            echo "📦 Version: $newVersion"
+            
             if npx release-please github-release \
               --config-file="$CONFIG_FILE" \
               --manifest-file="$MANIFEST_FILE" \
@@ -154,6 +157,16 @@ jobs:
               --prerelease; then
               
               echo "✅ GitHub release created successfully!"
+              echo "🏷️ Tag created: $newTag"
+              echo "🔗 Check releases at: https://github.com/deepaksmallcase/test-release-please/releases"
+              
+              # Verify the tag was created
+              echo "🔍 Verifying tag creation..."
+              if git ls-remote --tags origin | grep -q "refs/tags/$newTag"; then
+                echo "✅ Tag $newTag confirmed on remote repository"
+              else
+                echo "⚠️ Tag $newTag not found on remote (might take a moment to propagate)"
+              fi
               
               # Set outputs for next jobs
               echo "releases_created=true" >> $GITHUB_OUTPUT
@@ -181,6 +194,7 @@ jobs:
           echo "=== RELEASE PLEASE DEBUG OUTPUTS ==="
           echo "releases_created: ${{ steps.release.outputs.releases_created }}"
           echo "tag_name: ${{ steps.release.outputs.tag_name }}"
+          echo "version: ${{ steps.release.outputs.version }}"
           echo "upload_url: ${{ steps.release.outputs.upload_url }}"
           echo "id: ${{ steps.release.outputs.id }}"
           echo "html_url: ${{ steps.release.outputs.html_url }}"
@@ -192,6 +206,17 @@ jobs:
           echo "created_at: ${{ steps.release.outputs.created_at }}"
           echo "published_at: ${{ steps.release.outputs.published_at }}"
           echo "====================================="
+          
+          # Additional verification
+          echo "=== TAG VERIFICATION ==="
+          if [ -n "${{ steps.release.outputs.tag_name }}" ]; then
+            echo "✅ Tag name is set: ${{ steps.release.outputs.tag_name }}"
+            echo "🔗 GitHub releases: https://github.com/deepaksmallcase/test-release-please/releases"
+            echo "🏷️ Tag URL: https://github.com/deepaksmallcase/test-release-please/releases/tag/${{ steps.release.outputs.tag_name }}"
+          else
+            echo "❌ Tag name is empty - check if release was created successfully"
+          fi
+          echo "========================="
 
       
 
