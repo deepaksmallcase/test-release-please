@@ -121,34 +121,7 @@ jobs:
           echo "published_at: ${{ steps.release.outputs.published_at }}"
           echo "====================================="
 
-      - name: Create Fallback Tag if Release Please Didn't Create One
-        id: fallback-tag
-        run: |
-          if [ -z "${{ steps.release.outputs.tag_name }}" ]; then
-            echo "No tag created by release-please, creating fallback tag..."
-            
-            # Get current version from package.json
-            CURRENT_VERSION=$(node -p "require('./package.json').version")
-            echo "Current version: $CURRENT_VERSION"
-            
-            # Create prerelease tag
-            PRERELEASE_TAG="${CURRENT_VERSION}-${{ steps.env.outputs.environment }}.1"
-            echo "Creating fallback tag: $PRERELEASE_TAG"
-            
-            # Create and push the tag
-            git config --local user.email "action@github.com"
-            git config --local user.name "GitHub Action"
-            git tag -a "$PRERELEASE_TAG" -m "Prerelease $PRERELEASE_TAG for ${{ steps.env.outputs.environment }} environment"
-            git push origin "$PRERELEASE_TAG"
-            
-            echo "tag_name=$PRERELEASE_TAG" >> $GITHUB_OUTPUT
-            echo "releases_created=true" >> $GITHUB_OUTPUT
-            echo "Fallback tag created: $PRERELEASE_TAG"
-          else
-            echo "Release-please created tag: ${{ steps.release.outputs.tag_name }}"
-            echo "tag_name=${{ steps.release.outputs.tag_name }}" >> $GITHUB_OUTPUT
-            echo "releases_created=${{ steps.release.outputs.releases_created }}" >> $GITHUB_OUTPUT
-          fi
+      
 
   # This job runs tests and creates the prerelease
   prerelease:
