@@ -3,20 +3,21 @@ name: STAG Deployment
 on:
   push:
     branches:
-      - "main"
+      - main
     tags:
-      - 'v*-stag*'
+      - '*-stag.*'
+  workflow_dispatch:
 
 jobs:
-  create-tag:
+  prerelease-and-deploy:
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    environment: staging
     permissions:
-      contents: write   # needed to push tags
-    outputs:
-      tag: ${{ steps.version.outputs.tag }}
+      contents: write
+      pull-requests: write
+
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -24,73 +25,33 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: '18'
 
       - name: Install release-please
         run: npm install -g release-please
 
-      - name: Compute next staging prerelease version
-        id: version
+      - name: Get current tag or create prerelease
+        id: release
         run: |
-          # Use release-please to compute the next prerelease version
-          # This will use the configuration from release-please-config.json
-          OUTPUT=$(release-please release-pr \
-            --repo-url="https://github.com/${{ github.repository }}" \
-            --token="${{ secrets.GITHUB_TOKEN }}" \
-            --dry-run \
-            --target-branch="main")
-
-          echo "Release-please output:"
-          echo "$OUTPUT"
-
-          # Extract version from the output using grep and sed
-          # The output typically contains version information in the PR title or body
-          NEXT_VERSION=$(echo "$OUTPUT" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+-stag\.[0-9]+' | head -1)
-          
-          # Fallback: if no version found, create one from package.json
-          if [ -z "$NEXT_VERSION" ]; then
-            CURRENT_VERSION=$(node -p "require('./package.json').version")
-            echo "No version found in release-please output, using package.json: $CURRENT_VERSION"
+          # Check if this is triggered by a tag push
+          if [[ "${{ github.event_name }}" == "push" && "${{ github.ref }}" == refs/tags/* ]]; then
+            # Extract tag name from ref
+            TAG_NAME=${GITHUB_REF#refs/tags/}
+            echo "Using existing tag: $TAG_NAME"
+            echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
+          else
+            # Create prerelease tag for staging
+            echo "Creating prerelease tag for staging..."
+            release-please manifest \
+              --path=. \
+              --prerelease=stag \
+              --token=${{ secrets.GITHUB_TOKEN }}
             
-            # Check if current version already has prerelease suffix
-            if [[ "$CURRENT_VERSION" == *"-stag."* ]]; then
-              PRERELEASE_NUM=$(echo "$CURRENT_VERSION" | sed 's/.*-stag\.\([0-9]*\).*/\1/')
-              NEW_PRERELEASE_NUM=$((PRERELEASE_NUM + 1))
-              BASE_VERSION=$(echo "$CURRENT_VERSION" | sed 's/-stag\.[0-9]*.*//')
-              NEXT_VERSION="${BASE_VERSION}-stag.${NEW_PRERELEASE_NUM}"
-            else
-              NEXT_VERSION="${CURRENT_VERSION}-stag.1"
-            fi
+            # Get the latest tag
+            TAG_NAME=$(git describe --tags --abbrev=0)
+            echo "Created tag: $TAG_NAME"
+            echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
           fi
-          
-          echo "Next staging version: $NEXT_VERSION"
-          echo "NEXT_VERSION=$NEXT_VERSION" >> $GITHUB_ENV
-          echo "tag=v${NEXT_VERSION}" >> $GITHUB_OUTPUT
-
-      - name: Create and push tag
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          
-          TAG="v${NEXT_VERSION}"
-          echo "Creating tag: $TAG"
-          git tag $TAG
-          git push origin $TAG
-
-  deploy-stag:
-    runs-on: ubuntu-latest
-    needs: [create-tag]
-    if: always() && (needs.create-tag.result == 'success' || github.event_name == 'push' && startsWith(github.ref, 'refs/tags/'))
-    environment: staging
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
@@ -104,7 +65,7 @@ jobs:
       - name: Build for STAG
         run: |
           echo "Building for STAG environment..."
-          echo "Tag: ${{ github.ref_name }}"
+          echo "Tag: ${{ steps.release.outputs.tag_name }}"
           echo "Commit: ${{ github.sha }}"
           echo "Build completed successfully for STAG!"
 
@@ -112,7 +73,7 @@ jobs:
         run: |
           echo "Simulating STAG deployment..."
           echo "Environment: STAG"
-          echo "Tag: ${{ github.ref_name }}"
+          echo "Tag: ${{ steps.release.outputs.tag_name }}"
           echo "Commit: ${{ github.sha }}"
           echo "✅ STAG deployment simulation completed!"
 
@@ -120,6 +81,6 @@ jobs:
         run: |
           echo "✅ STAG deployment completed successfully!"
           echo "Environment: STAG"
-          echo "Tag: ${{ github.ref_name }}"
+          echo "Tag: ${{ steps.release.outputs.tag_name }}"
           echo "Commit: ${{ github.sha }}"
-          # Add Mattermost/Slack notification here 
+          # Add Mattermost/Slack notification here
