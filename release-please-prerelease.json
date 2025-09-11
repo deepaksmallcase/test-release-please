@@ -21,7 +21,7 @@
       "branch": "main",
       "prerelease": true,
       "prerelease-label": "stag",
-      "prerelease-type": "prerelease"
+      "prerelease-type": "pre"
     }
   ],
   "packages": {

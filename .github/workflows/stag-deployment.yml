@@ -31,6 +31,9 @@ jobs:
           prerelease: true
           prerelease-type: pre
           prerelease-label: stag
+          config-file: release-please-prerelease.json
+          token: ${{ secrets.GITHUB_TOKEN }}
+          command: release-pr
           skip-github-pull-request: true
         id: release
 
