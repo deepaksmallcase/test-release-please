@@ -32,15 +32,26 @@ jobs:
       - name: Compute next staging prerelease version
         id: version
         run: |
-          OUTPUT=$(release-please manifest \
-            --path=. \
-            --prerelease=stag \
+          # Use release-please to get the next version for the main branch (configured as prerelease)
+          OUTPUT=$(release-please release-pr \
+            --repo-url="https://github.com/${{ github.repository }}" \
+            --token="${{ secrets.GITHUB_TOKEN }}" \
             --dry-run \
             --json)
 
           echo "$OUTPUT"
 
-          NEXT_VERSION=$(echo "$OUTPUT" | jq -r '.["."]["version"]')
+          # Extract version from the output
+          NEXT_VERSION=$(echo "$OUTPUT" | jq -r '.version // empty')
+          
+          # Fallback to package.json version if release-please doesn't return a version
+          if [ -z "$NEXT_VERSION" ] || [ "$NEXT_VERSION" = "null" ]; then
+            CURRENT_VERSION=$(node -p "require('./package.json').version")
+            echo "Using package.json version as fallback: $CURRENT_VERSION"
+            NEXT_VERSION="${CURRENT_VERSION}-stag.1"
+          fi
+          
+          echo "Next staging version: $NEXT_VERSION"
           echo "NEXT_VERSION=$NEXT_VERSION" >> $GITHUB_ENV
           echo "tag=v${NEXT_VERSION}" >> $GITHUB_OUTPUT
 
