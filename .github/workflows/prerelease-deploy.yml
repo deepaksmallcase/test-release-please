@@ -69,6 +69,17 @@ jobs:
           echo "Using manifest: .github/prerelease-manifest-${{ steps.env.outputs.environment }}.json"
           echo "Skip PR creation: true (direct tag creation)"
 
+      - name: Debug Environment and Config
+        run: |
+          echo "Environment: ${{ steps.env.outputs.environment }}"
+          echo "Config file: .github/prerelease-config-${{ steps.env.outputs.environment }}.json"
+          echo "Manifest file: .github/prerelease-manifest-${{ steps.env.outputs.environment }}.json"
+          echo "Current package.json version: $(node -p "require('./package.json').version")"
+          echo "Config file contents:"
+          cat ".github/prerelease-config-${{ steps.env.outputs.environment }}.json"
+          echo "Manifest file contents:"
+          cat ".github/prerelease-manifest-${{ steps.env.outputs.environment }}.json"
+
       - id: release
         name: Run prerelease release-please
         uses: googleapis/release-please-action@v4.3.0
