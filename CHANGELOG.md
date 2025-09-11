@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.0-beta](https://github.com/deepaksmallcase/test-release-please/compare/v1.9.0...v1.10.0-beta) (2025-09-11)
+
+
+### Features
+
+* nre work ([315b278](https://github.com/deepaksmallcase/test-release-please/commit/315b27861f293efa47780f5c621b18848a524157))
+
+
+### Bug Fixes
+
+* bb ([4584ee8](https://github.com/deepaksmallcase/test-release-please/commit/4584ee8df15b41a530357c6d1711ea48966a4817))
+* log ([b7a2338](https://github.com/deepaksmallcase/test-release-please/commit/b7a2338d0da8d1a6ac2167682ab64ac76f418b34))
+* main ([46f1511](https://github.com/deepaksmallcase/test-release-please/commit/46f1511cd4062f2893db4213ab1ed12d91f14636))
+* mm ([eb06bca](https://github.com/deepaksmallcase/test-release-please/commit/eb06bcace9e6eccd237171585501366de32fc4f9))
+* nsands ([9dad70a](https://github.com/deepaksmallcase/test-release-please/commit/9dad70ae2c953a7641aad1724079a502215ec11c))
+
+
+### Miscellaneous Chores
+
+* **main:** release 1.10.0-rc ([4ffacdc](https://github.com/deepaksmallcase/test-release-please/commit/4ffacdc8b90072131faf10c63c00786d27a219be))
+* **main:** release 1.10.0-rc ([601e5f0](https://github.com/deepaksmallcase/test-release-please/commit/601e5f069f39797169697783e8d3455a19c38109))
+* **main:** release 1.10.0-rc.1 ([e99b845](https://github.com/deepaksmallcase/test-release-please/commit/e99b845428dd8d272ca4eaeafc10c864b2bbd66d))
+* **main:** release 1.10.0-rc.1 ([d404dd8](https://github.com/deepaksmallcase/test-release-please/commit/d404dd8a7514cd673a20c9dfee615bd6fca5ef59))
+* update stag deployment configuration to include prerelease type and skip pull request ([a2b7684](https://github.com/deepaksmallcase/test-release-please/commit/a2b7684a4b28f09529168ec6611777ad626b142b))
+
 ## [1.10.0-rc.1](https://github.com/deepaksmallcase/test-release-please/compare/v1.10.0-rc...v1.10.0-rc.1) (2025-09-11)
 
 
