@@ -5,6 +5,8 @@
   "versioning": "prerelease",
   "bump-minor-pre-major": true,
   "bump-patch-for-minor-pre-major": true,
+  "tag-prefix": "v",
+  "include-component-in-tag": false,
   "changelog-sections": [
     { "type": "feat", "hidden": false, "section": "Features" },
     { "type": "fix", "hidden": false, "section": "Bug Fixes" },
