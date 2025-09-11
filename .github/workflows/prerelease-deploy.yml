@@ -65,8 +65,9 @@ jobs:
             echo "environment=stag" >> $GITHUB_OUTPUT
           fi
           echo "Selected environment: ${{ steps.env.outputs.environment }}"
-          echo "Config file will be: .github/prerelease-config-${{ steps.env.outputs.environment }}.json"
-          echo "Manifest file will be: .github/prerelease-manifest-${{ steps.env.outputs.environment }}.json"
+          echo "Using config: .github/prerelease-config-${{ steps.env.outputs.environment }}.json"
+          echo "Using manifest: .github/prerelease-manifest-${{ steps.env.outputs.environment }}.json"
+          echo "Skip PR creation: true (direct tag creation)"
 
       - id: release
         name: Run prerelease release-please
@@ -74,6 +75,7 @@ jobs:
         with:
           config-file: ".github/prerelease-config-${{ steps.env.outputs.environment }}.json"
           manifest-file: ".github/prerelease-manifest-${{ steps.env.outputs.environment }}.json"
+          skip-github-pull-request: true
           #token: ${{ secrets.MY_RELEASE_PLEASE_TOKEN }}
 
   # This job runs tests and creates the prerelease
