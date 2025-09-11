@@ -111,8 +111,17 @@ jobs:
           echo "📋 Using config: $CONFIG_FILE"
           echo "📋 Using manifest: $MANIFEST_FILE"
           
-          # First, run release-please to update files (package.json, manifest, changelog)
-          echo "🔄 Step 1: Updating files with release-please..."
+          # Use release-please to create the next prerelease version and tag directly
+          echo "🔄 Creating next prerelease version and tag..."
+          
+          # Calculate next version using release-please
+          echo "📋 Calculating next version for ${{ steps.env.outputs.environment }} environment..."
+          
+          # Get the current version from manifest
+          currentManifestVersion=$(cat "$MANIFEST_FILE" | jq -r '."."')
+          echo "📦 Current manifest version: $currentManifestVersion"
+          
+          # Use release-please to calculate next version without creating PR
           if npx release-please release \
             --config-file="$CONFIG_FILE" \
             --manifest-file="$MANIFEST_FILE" \
@@ -122,32 +131,36 @@ jobs:
             --prerelease \
             --skip-github-release; then
             
-            echo "✅ Files updated successfully!"
-            
             # Get the new version from updated manifest
             newVersion=$(cat "$MANIFEST_FILE" | jq -r '."."')
             newTag="v$newVersion"
             
-            echo "🏷️ Release-please calculated new version: $newVersion"
-            echo "📦 Version progression: $currentVersion → $newVersion"
+            echo "✅ Release-please calculated new version: $newVersion"
+            echo "📦 Version progression: $currentManifestVersion → $newVersion"
+            echo "🏷️ New tag will be: $newTag"
             
-            # Check if package.json was updated
+            # Update package.json with new version
+            echo "🔄 Updating package.json..."
+            jq --arg version "$newVersion" '.version = $version' package.json > package.json.tmp && mv package.json.tmp package.json
             updatedPackageVersion=$(cat package.json | jq -r '.version')
-            echo "📦 Package.json version: $updatedPackageVersion"
+            echo "📦 Package.json updated to: $updatedPackageVersion"
             
             # Commit and push the changes
-            echo "🔄 Step 2: Committing and pushing changes..."
+            echo "🔄 Committing and pushing changes..."
             git config --local user.email "action@github.com"
             git config --local user.name "GitHub Action"
             git add package.json "$MANIFEST_FILE" CHANGELOG.md
             git commit -m "chore: bump version to $newVersion for ${{ steps.env.outputs.environment }} prerelease" || echo "No changes to commit"
             git push origin main
             
-            # Now create the GitHub release
-            echo "🔄 Step 3: Creating GitHub release..."
-            echo "🏷️ About to create tag: $newTag"
-            echo "📦 Version: $newVersion"
+            # Create the Git tag
+            echo "🔄 Creating Git tag: $newTag"
+            git tag "$newTag"
+            git push origin "$newTag"
+            echo "✅ Git tag created and pushed: $newTag"
             
+            # Create GitHub release
+            echo "🔄 Creating GitHub release..."
             if npx release-please github-release \
               --config-file="$CONFIG_FILE" \
               --manifest-file="$MANIFEST_FILE" \
@@ -157,7 +170,7 @@ jobs:
               --prerelease; then
               
               echo "✅ GitHub release created successfully!"
-              echo "🏷️ Tag created: $newTag"
+              echo "🏷️ Tag: $newTag"
               echo "🔗 Check releases at: https://github.com/deepaksmallcase/test-release-please/releases"
               
               # Verify the tag was created
@@ -173,10 +186,8 @@ jobs:
               echo "tag_name=$newTag" >> $GITHUB_OUTPUT
               echo "version=$newVersion" >> $GITHUB_OUTPUT
               
-              echo "✅ Updated $MANIFEST_FILE and package.json with new version"
-              
             else
-              echo "⚠️ Failed to create GitHub release, but files were updated"
+              echo "⚠️ Failed to create GitHub release, but tag was created"
               echo "releases_created=false" >> $GITHUB_OUTPUT
               echo "tag_name=$newTag" >> $GITHUB_OUTPUT
               echo "version=$newVersion" >> $GITHUB_OUTPUT
