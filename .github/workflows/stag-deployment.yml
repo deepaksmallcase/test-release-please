@@ -28,6 +28,11 @@ jobs:
       - uses: google-github-actions/release-please-action@v4
         with:
           config-file: release-please-prerelease.json
+          token: ${{ secrets.GITHUB_TOKEN }}
+          command: release-pr
+          release-type: node
+          prerelease: true
+          prerelease-type: stag
         id: release
 
       - name: Install dependencies
