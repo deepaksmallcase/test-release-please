@@ -57,10 +57,10 @@ jobs:
             echo "Using current commit as bootstrap-sha: $BOOTSTRAP_SHA"
             
             # Create temporary release-please config for stag environment
-            cat > release-please-prerelease.json << EOF
+            cat > release-please-prerelease.json << 'EOF'
             {
-              "\$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
-              "bootstrap-sha": "$BOOTSTRAP_SHA",
+              "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+              "bootstrap-sha": "BOOTSTRAP_SHA_PLACEHOLDER",
               "include-component-in-tag": false,
               "changelog-path": "CHANGELOG.md",
               "branches": [
@@ -83,6 +83,9 @@ jobs:
               }
             }
             EOF
+            
+            # Replace the placeholder with actual bootstrap SHA
+            sed -i "s/BOOTSTRAP_SHA_PLACEHOLDER/$BOOTSTRAP_SHA/g" release-please-prerelease.json
             
             # Use release-please to create the prerelease
             if npx release-please github-release \
