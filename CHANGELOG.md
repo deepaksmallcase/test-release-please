@@ -5,6 +5,44 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.0-dev](https://github.com/deepaksmallcase/test-release-please/compare/v1.9.0...v1.10.0-dev) (2025-09-11)
+
+
+### Features
+
+* nre work ([315b278](https://github.com/deepaksmallcase/test-release-please/commit/315b27861f293efa47780f5c621b18848a524157))
+
+
+### Bug Fixes
+
+* bb ([4584ee8](https://github.com/deepaksmallcase/test-release-please/commit/4584ee8df15b41a530357c6d1711ea48966a4817))
+* creqte pr ([8430f2a](https://github.com/deepaksmallcase/test-release-please/commit/8430f2a33859034fc45665a9c7ec666415278118))
+* debug ([1178a7b](https://github.com/deepaksmallcase/test-release-please/commit/1178a7b96d01a5ee79bfc439794eea72fb27f01c))
+* fixxx ([e4d6e1b](https://github.com/deepaksmallcase/test-release-please/commit/e4d6e1b1acbffa33d7367c6df13d8afdfca1f00f))
+* issues ([76aa857](https://github.com/deepaksmallcase/test-release-please/commit/76aa8579493b27e15fc458d920c339998073e29d))
+* log ([b7a2338](https://github.com/deepaksmallcase/test-release-please/commit/b7a2338d0da8d1a6ac2167682ab64ac76f418b34))
+* main ([46f1511](https://github.com/deepaksmallcase/test-release-please/commit/46f1511cd4062f2893db4213ab1ed12d91f14636))
+* mm ([eb06bca](https://github.com/deepaksmallcase/test-release-please/commit/eb06bcace9e6eccd237171585501366de32fc4f9))
+* no iss ([e9a8da5](https://github.com/deepaksmallcase/test-release-please/commit/e9a8da5be061e6a20c2376c0ef2a5e9bfe41efdc))
+* nsands ([9dad70a](https://github.com/deepaksmallcase/test-release-please/commit/9dad70ae2c953a7641aad1724079a502215ec11c))
+* remove fallback ([c11e1c7](https://github.com/deepaksmallcase/test-release-please/commit/c11e1c789e470f65d82897fc1c508f686bce367b))
+* versions fix ([2f266c9](https://github.com/deepaksmallcase/test-release-please/commit/2f266c9d79f47b2989c0d44ac09ab19a4d653606))
+
+
+### Miscellaneous Chores
+
+* **main:** release 1.10.0-beta ([c218ffd](https://github.com/deepaksmallcase/test-release-please/commit/c218ffd31ffe64b95f84c1bd7f04b24bd1170c03))
+* **main:** release 1.10.0-beta ([c5c0a8e](https://github.com/deepaksmallcase/test-release-please/commit/c5c0a8e53a5b661ef1380f910cb5ce86700d2065))
+* **main:** release 1.10.0-rc ([4ffacdc](https://github.com/deepaksmallcase/test-release-please/commit/4ffacdc8b90072131faf10c63c00786d27a219be))
+* **main:** release 1.10.0-rc ([601e5f0](https://github.com/deepaksmallcase/test-release-please/commit/601e5f069f39797169697783e8d3455a19c38109))
+* **main:** release 1.10.0-rc.1 ([e99b845](https://github.com/deepaksmallcase/test-release-please/commit/e99b845428dd8d272ca4eaeafc10c864b2bbd66d))
+* **main:** release 1.10.0-rc.1 ([d404dd8](https://github.com/deepaksmallcase/test-release-please/commit/d404dd8a7514cd673a20c9dfee615bd6fca5ef59))
+* **main:** release 1.9.0-stag.2 ([d2d24dc](https://github.com/deepaksmallcase/test-release-please/commit/d2d24dc760436db80bfe25fc96742e3a4610f738))
+* **main:** release 1.9.0-stag.2 ([fbcdaaf](https://github.com/deepaksmallcase/test-release-please/commit/fbcdaaf8517421c64e6a0579a6154589623bffce))
+* **main:** release react-webpack-demo 1.9.0-stag.1 ([263aabb](https://github.com/deepaksmallcase/test-release-please/commit/263aabb6723cfb34f15cb2968d9c23f4d1e70411))
+* **main:** release react-webpack-demo 1.9.0-stag.1 ([04120ca](https://github.com/deepaksmallcase/test-release-please/commit/04120ca0e586b502e35d13ee055b900506378d12))
+* update stag deployment configuration to include prerelease type and skip pull request ([a2b7684](https://github.com/deepaksmallcase/test-release-please/commit/a2b7684a4b28f09529168ec6611777ad626b142b))
+
 ## [1.9.0-stag.2](https://github.com/deepaksmallcase/test-release-please/compare/v1.9.0-stag.1...v1.9.0-stag.2) (2025-09-11)
 
 
