@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.0](https://github.com/deepaksmallcase/test-release-please/compare/v1.8.2...v1.9.0) (2025-09-11)
+
+
+### Features
+
+* dsd ([fb5242c](https://github.com/deepaksmallcase/test-release-please/commit/fb5242c418e6ff53523c428a0ddc8d07d66f039a))
+
+
+### Bug Fixes
+
+* upd ([2f5578b](https://github.com/deepaksmallcase/test-release-please/commit/2f5578bec5b95e01bd0bd6c813e87c9c6be97213))
+
 ## [1.8.2](https://github.com/deepaksmallcase/test-release-please/compare/v1.8.1...v1.8.2) (2025-09-11)
 
 
