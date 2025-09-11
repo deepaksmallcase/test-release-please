@@ -99,7 +99,7 @@ jobs:
         with:
           config-file: ".github/prerelease-config-${{ steps.env.outputs.environment }}.json"
           manifest-file: ".github/prerelease-manifest-${{ steps.env.outputs.environment }}.json"
-        #   skip-github-pull-request: true
+          command: release
           #token: ${{ secrets.MY_RELEASE_PLEASE_TOKEN }}
         env:
           DEBUG: "release-please"
