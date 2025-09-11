@@ -154,24 +154,40 @@ jobs:
 
       - name: Log Prerelease Tag Creation
         run: |
-          echo "🚀 PRERELEASE TAG CREATED: ${{ needs.prerelease-prep.outputs.tag_name }}"
-          echo "📦 Environment: ${{ needs.prerelease-prep.outputs.environment }}"
+          echo "=========================================="
+          echo "🚀 NEW PRERELEASE TAG CREATED!"
+          echo "=========================================="
           echo "🏷️  Tag: ${{ needs.prerelease-prep.outputs.tag_name }}"
+          echo "📦 Environment: ${{ needs.prerelease-prep.outputs.environment }}"
           echo "📅 Created at: $(date)"
           echo "🔗 Repository: ${{ github.repository }}"
           echo "👤 Triggered by: ${{ github.actor }}"
+          echo "🌿 Branch: ${{ github.ref_name }}"
+          echo "📝 Commit: ${{ github.sha }}"
+          echo "=========================================="
           
           # Log to GitHub Actions summary
-          echo "## 🚀 Prerelease Created Successfully" >> $GITHUB_STEP_SUMMARY
+          echo "## 🚀 New Prerelease Tag Created!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📋 Tag Details" >> $GITHUB_STEP_SUMMARY
           echo "- **Tag**: \`${{ needs.prerelease-prep.outputs.tag_name }}\`" >> $GITHUB_STEP_SUMMARY
           echo "- **Environment**: \`${{ needs.prerelease-prep.outputs.environment }}\`" >> $GITHUB_STEP_SUMMARY
           echo "- **Created at**: \`$(date)\`" >> $GITHUB_STEP_SUMMARY
           echo "- **Triggered by**: \`${{ github.actor }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch**: \`${{ github.ref_name }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit**: \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🎯 Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "1. Review the generated changelog" >> $GITHUB_STEP_SUMMARY
+          echo "2. Merge the release PR to create the actual tag" >> $GITHUB_STEP_SUMMARY
+          echo "3. Deploy to \`${{ needs.prerelease-prep.outputs.environment }}\` environment" >> $GITHUB_STEP_SUMMARY
 
       - name: Deploy to ${{ needs.prerelease-prep.outputs.environment }}
         run: |
           echo "🚀 Deploying to ${{ needs.prerelease-prep.outputs.environment }} environment..."
           echo "📦 Tag: ${{ needs.prerelease-prep.outputs.tag_name }}"
+          echo "🏷️  Prerelease Tag Format: 1.x.x-${{ needs.prerelease-prep.outputs.environment }}.X"
+          echo "📊 Current Tag: ${{ needs.prerelease-prep.outputs.tag_name }}"
           
           # Add your deployment logic here based on environment
           case "${{ needs.prerelease-prep.outputs.environment }}" in
