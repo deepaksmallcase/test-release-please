@@ -29,7 +29,8 @@ jobs:
         with:
           release-type: node
           prerelease: true
-          prerelease-type: stag
+          prerelease-type: pre
+          prerelease-label: stag
           skip-github-pull-request: true
         id: release
 
