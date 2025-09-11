@@ -1,10 +1,7 @@
 name: Prerelease Deploy
 
 on:
-  # Triggers the workflow on push events but only for main branch
-  push:
-    branches: [ "main" ]
-  # Allow manual trigger with environment selection
+  # Only allow manual trigger with environment selection
   workflow_dispatch:
     inputs:
       environment:
@@ -77,11 +74,10 @@ jobs:
           manifest-file: ".github/prerelease-manifest-${{ steps.env.outputs.environment }}.json"
           #token: ${{ secrets.MY_RELEASE_PLEASE_TOKEN }}
 
-  # This job runs tests before the creation of the prerelease
-  prerelease-test:
-    name: Run Prerelease Tests
+  # This job runs tests and creates the prerelease
+  prerelease:
+    name: Create Prerelease
     runs-on: ubuntu-latest
-    if: ${{ needs.prerelease-prep.outputs.releases_created == 'false' }}
     needs: [ prerelease-prep ]
     steps:
       - name: Checkout
@@ -116,50 +112,14 @@ jobs:
               ;;
           esac
 
-  # This job creates the Prerelease
-  prerelease:
-    name: Create Prerelease
-    runs-on: ubuntu-latest
-    if: ${{ needs.prerelease-prep.outputs.releases_created == 'true' }}
-    needs: [ prerelease-prep ]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build application for ${{ needs.prerelease-prep.outputs.environment }}
-        run: |
-          case "${{ needs.prerelease-prep.outputs.environment }}" in
-            "stag")
-              npm run build:stag
-              ;;
-            "dev")
-              npm run build:dev
-              ;;
-            "beta")
-              npm run build:prod
-              ;;
-            *)
-              npm run build:stag
-              ;;
-          esac
-
-      - name: Log Prerelease Tag Creation
+      - name: Log Prerelease Status
         run: |
           echo "=========================================="
-          echo "🚀 NEW PRERELEASE TAG CREATED!"
+          echo "🚀 PRERELEASE WORKFLOW STATUS"
           echo "=========================================="
           echo "🏷️  Tag: ${{ needs.prerelease-prep.outputs.tag_name }}"
           echo "📦 Environment: ${{ needs.prerelease-prep.outputs.environment }}"
-          echo "📅 Created at: $(date)"
+          echo "📅 Processed at: $(date)"
           echo "🔗 Repository: ${{ github.repository }}"
           echo "👤 Triggered by: ${{ github.actor }}"
           echo "🌿 Branch: ${{ github.ref_name }}"
@@ -167,18 +127,18 @@ jobs:
           echo "=========================================="
           
           # Log to GitHub Actions summary
-          echo "## 🚀 New Prerelease Tag Created!" >> $GITHUB_STEP_SUMMARY
+          echo "## 🚀 Prerelease Workflow Completed!" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### 📋 Tag Details" >> $GITHUB_STEP_SUMMARY
+          echo "### 📋 Details" >> $GITHUB_STEP_SUMMARY
           echo "- **Tag**: \`${{ needs.prerelease-prep.outputs.tag_name }}\`" >> $GITHUB_STEP_SUMMARY
           echo "- **Environment**: \`${{ needs.prerelease-prep.outputs.environment }}\`" >> $GITHUB_STEP_SUMMARY
-          echo "- **Created at**: \`$(date)\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Processed at**: \`$(date)\`" >> $GITHUB_STEP_SUMMARY
           echo "- **Triggered by**: \`${{ github.actor }}\`" >> $GITHUB_STEP_SUMMARY
           echo "- **Branch**: \`${{ github.ref_name }}\`" >> $GITHUB_STEP_SUMMARY
           echo "- **Commit**: \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### 🎯 Next Steps" >> $GITHUB_STEP_SUMMARY
-          echo "1. Review the generated changelog" >> $GITHUB_STEP_SUMMARY
+          echo "1. Review the generated changelog in the PR" >> $GITHUB_STEP_SUMMARY
           echo "2. Merge the release PR to create the actual tag" >> $GITHUB_STEP_SUMMARY
           echo "3. Deploy to \`${{ needs.prerelease-prep.outputs.environment }}\` environment" >> $GITHUB_STEP_SUMMARY
 
