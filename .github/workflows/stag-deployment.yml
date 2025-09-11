@@ -46,11 +46,11 @@ jobs:
             echo "Current version: $currentVersion"
             
             # Create manifest file
-            cat > .release-please-manifest.json << EOF
+            cat > .release-please-manifest.json << 'EOF'
             {
               ".": "$currentVersion"
             }
-            EOF
+            'EOF'
             
             # Get the current commit SHA as bootstrap-sha
             BOOTSTRAP_SHA=${{ github.sha }}
@@ -82,7 +82,7 @@ jobs:
                 }
               }
             }
-            EOF
+            'EOF'
             
             # Replace the placeholder with actual bootstrap SHA
             sed -i "s/BOOTSTRAP_SHA_PLACEHOLDER/$BOOTSTRAP_SHA/g" release-please-prerelease.json
