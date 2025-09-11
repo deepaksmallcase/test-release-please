@@ -65,6 +65,8 @@ jobs:
             echo "environment=stag" >> $GITHUB_OUTPUT
           fi
           echo "Selected environment: ${{ steps.env.outputs.environment }}"
+          echo "Config file will be: .github/prerelease-config-${{ steps.env.outputs.environment }}.json"
+          echo "Manifest file will be: .github/prerelease-manifest-${{ steps.env.outputs.environment }}.json"
 
       - id: release
         name: Run prerelease release-please
