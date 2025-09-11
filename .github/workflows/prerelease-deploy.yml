@@ -94,15 +94,54 @@ jobs:
           echo "================================="
 
       - id: release
-        name: Run prerelease release-please
-        uses: googleapis/release-please-action@v4.3.0
-        with:
-          config-file: ".github/prerelease-config-${{ steps.env.outputs.environment }}.json"
-          manifest-file: ".github/prerelease-manifest-${{ steps.env.outputs.environment }}.json"
-          command: release
-          #token: ${{ secrets.MY_RELEASE_PLEASE_TOKEN }}
+        name: Create Prerelease Tag and Update Files
         env:
-          DEBUG: "release-please"
+          GITHUB_TOKEN: ${{ secrets.PRE_RELEASE_TAG_ACTION }}
+        run: |
+          echo "🚀 Creating pre-release for ${{ steps.env.outputs.environment }} environment"
+          
+          # Get current version from package.json
+          currentVersion=$(cat package.json | jq -r '.version')
+          echo "📦 Current version: $currentVersion"
+          
+          # Use existing environment-specific config and manifest files
+          CONFIG_FILE=".github/prerelease-config-${{ steps.env.outputs.environment }}.json"
+          MANIFEST_FILE=".github/prerelease-manifest-${{ steps.env.outputs.environment }}.json"
+          
+          echo "📋 Using config: $CONFIG_FILE"
+          echo "📋 Using manifest: $MANIFEST_FILE"
+          
+          # Run release-please to create the release directly (no PR)
+          if npx release-please github-release \
+            --config-file="$CONFIG_FILE" \
+            --manifest-file="$MANIFEST_FILE" \
+            --repo-url=https://github.com/deepaksmallcase/test-release-please \
+            --token=$GITHUB_TOKEN \
+            --target-branch=main \
+            --prerelease; then
+            
+            echo "✅ Release-please completed successfully!"
+            
+            # Get the new version from updated manifest
+            newVersion=$(cat "$MANIFEST_FILE" | jq -r '."."')
+            newTag="v$newVersion"
+            
+            echo "🏷️ Release-please calculated new version: $newVersion"
+            echo "📦 Version progression: $currentVersion → $newVersion"
+            
+            # Set outputs for next jobs
+            echo "releases_created=true" >> $GITHUB_OUTPUT
+            echo "tag_name=$newTag" >> $GITHUB_OUTPUT
+            echo "version=$newVersion" >> $GITHUB_OUTPUT
+            
+            echo "✅ Updated $MANIFEST_FILE with new version"
+            
+          else
+            echo "⚠️ No release created - this usually means no releasable changes found"
+            echo "💡 Release-please looks for conventional commits (feat:, fix:, etc.)"
+            echo "releases_created=false" >> $GITHUB_OUTPUT
+            echo "tag_name=" >> $GITHUB_OUTPUT
+          fi
 
       - name: Debug Release Please Outputs
         run: |
