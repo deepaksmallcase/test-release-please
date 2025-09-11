@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.0-stag.2](https://github.com/deepaksmallcase/test-release-please/compare/v1.9.0-stag.1...v1.9.0-stag.2) (2025-09-11)
+
+
+### Bug Fixes
+
+* fixxx ([e4d6e1b](https://github.com/deepaksmallcase/test-release-please/commit/e4d6e1b1acbffa33d7367c6df13d8afdfca1f00f))
+
 ## [1.9.0-stag.1](https://github.com/deepaksmallcase/test-release-please/compare/react-webpack-demo-v1.9.0-stag.0...react-webpack-demo-v1.9.0-stag.1) (2025-09-11)
 
 
