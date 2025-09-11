@@ -111,16 +111,18 @@ jobs:
           echo "📋 Using config: $CONFIG_FILE"
           echo "📋 Using manifest: $MANIFEST_FILE"
           
-          # Run release-please to create the release directly (no PR)
-          if npx release-please github-release \
+          # First, run release-please to update files (package.json, manifest, changelog)
+          echo "🔄 Step 1: Updating files with release-please..."
+          if npx release-please release \
             --config-file="$CONFIG_FILE" \
             --manifest-file="$MANIFEST_FILE" \
             --repo-url=https://github.com/deepaksmallcase/test-release-please \
             --token=$GITHUB_TOKEN \
             --target-branch=main \
-            --prerelease; then
+            --prerelease \
+            --skip-github-release; then
             
-            echo "✅ Release-please completed successfully!"
+            echo "✅ Files updated successfully!"
             
             # Get the new version from updated manifest
             newVersion=$(cat "$MANIFEST_FILE" | jq -r '."."')
@@ -129,12 +131,43 @@ jobs:
             echo "🏷️ Release-please calculated new version: $newVersion"
             echo "📦 Version progression: $currentVersion → $newVersion"
             
-            # Set outputs for next jobs
-            echo "releases_created=true" >> $GITHUB_OUTPUT
-            echo "tag_name=$newTag" >> $GITHUB_OUTPUT
-            echo "version=$newVersion" >> $GITHUB_OUTPUT
+            # Check if package.json was updated
+            updatedPackageVersion=$(cat package.json | jq -r '.version')
+            echo "📦 Package.json version: $updatedPackageVersion"
             
-            echo "✅ Updated $MANIFEST_FILE with new version"
+            # Commit and push the changes
+            echo "🔄 Step 2: Committing and pushing changes..."
+            git config --local user.email "action@github.com"
+            git config --local user.name "GitHub Action"
+            git add package.json "$MANIFEST_FILE" CHANGELOG.md
+            git commit -m "chore: bump version to $newVersion for ${{ steps.env.outputs.environment }} prerelease" || echo "No changes to commit"
+            git push origin main
+            
+            # Now create the GitHub release
+            echo "🔄 Step 3: Creating GitHub release..."
+            if npx release-please github-release \
+              --config-file="$CONFIG_FILE" \
+              --manifest-file="$MANIFEST_FILE" \
+              --repo-url=https://github.com/deepaksmallcase/test-release-please \
+              --token=$GITHUB_TOKEN \
+              --target-branch=main \
+              --prerelease; then
+              
+              echo "✅ GitHub release created successfully!"
+              
+              # Set outputs for next jobs
+              echo "releases_created=true" >> $GITHUB_OUTPUT
+              echo "tag_name=$newTag" >> $GITHUB_OUTPUT
+              echo "version=$newVersion" >> $GITHUB_OUTPUT
+              
+              echo "✅ Updated $MANIFEST_FILE and package.json with new version"
+              
+            else
+              echo "⚠️ Failed to create GitHub release, but files were updated"
+              echo "releases_created=false" >> $GITHUB_OUTPUT
+              echo "tag_name=$newTag" >> $GITHUB_OUTPUT
+              echo "version=$newVersion" >> $GITHUB_OUTPUT
+            fi
             
           else
             echo "⚠️ No release created - this usually means no releasable changes found"
