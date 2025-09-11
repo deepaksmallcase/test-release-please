@@ -32,23 +32,35 @@ jobs:
       - name: Compute next staging prerelease version
         id: version
         run: |
-          # Use release-please to get the next version for the main branch (configured as prerelease)
+          # Use release-please to compute the next prerelease version
+          # This will use the configuration from release-please-config.json
           OUTPUT=$(release-please release-pr \
             --repo-url="https://github.com/${{ github.repository }}" \
             --token="${{ secrets.GITHUB_TOKEN }}" \
             --dry-run \
-            --json)
+            --target-branch="main")
 
+          echo "Release-please output:"
           echo "$OUTPUT"
 
-          # Extract version from the output
-          NEXT_VERSION=$(echo "$OUTPUT" | jq -r '.version // empty')
+          # Extract version from the output using grep and sed
+          # The output typically contains version information in the PR title or body
+          NEXT_VERSION=$(echo "$OUTPUT" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+-stag\.[0-9]+' | head -1)
           
-          # Fallback to package.json version if release-please doesn't return a version
-          if [ -z "$NEXT_VERSION" ] || [ "$NEXT_VERSION" = "null" ]; then
+          # Fallback: if no version found, create one from package.json
+          if [ -z "$NEXT_VERSION" ]; then
             CURRENT_VERSION=$(node -p "require('./package.json').version")
-            echo "Using package.json version as fallback: $CURRENT_VERSION"
-            NEXT_VERSION="${CURRENT_VERSION}-stag.1"
+            echo "No version found in release-please output, using package.json: $CURRENT_VERSION"
+            
+            # Check if current version already has prerelease suffix
+            if [[ "$CURRENT_VERSION" == *"-stag."* ]]; then
+              PRERELEASE_NUM=$(echo "$CURRENT_VERSION" | sed 's/.*-stag\.\([0-9]*\).*/\1/')
+              NEW_PRERELEASE_NUM=$((PRERELEASE_NUM + 1))
+              BASE_VERSION=$(echo "$CURRENT_VERSION" | sed 's/-stag\.[0-9]*.*//')
+              NEXT_VERSION="${BASE_VERSION}-stag.${NEW_PRERELEASE_NUM}"
+            else
+              NEXT_VERSION="${CURRENT_VERSION}-stag.1"
+            fi
           fi
           
           echo "Next staging version: $NEXT_VERSION"
