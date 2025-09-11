@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.0-rc](https://github.com/deepaksmallcase/test-release-please/compare/v1.9.0...v1.10.0-rc) (2025-09-11)
+
+
+### Features
+
+* nre work ([315b278](https://github.com/deepaksmallcase/test-release-please/commit/315b27861f293efa47780f5c621b18848a524157))
+
+
+### Bug Fixes
+
+* main ([46f1511](https://github.com/deepaksmallcase/test-release-please/commit/46f1511cd4062f2893db4213ab1ed12d91f14636))
+* mm ([eb06bca](https://github.com/deepaksmallcase/test-release-please/commit/eb06bcace9e6eccd237171585501366de32fc4f9))
+
+
+### Miscellaneous Chores
+
+* update stag deployment configuration to include prerelease type and skip pull request ([a2b7684](https://github.com/deepaksmallcase/test-release-please/commit/a2b7684a4b28f09529168ec6611777ad626b142b))
+
 ## [1.9.0](https://github.com/deepaksmallcase/test-release-please/compare/v1.8.2...v1.9.0) (2025-09-11)
 
 
