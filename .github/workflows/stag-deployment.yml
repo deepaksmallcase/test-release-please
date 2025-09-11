@@ -3,7 +3,7 @@ name: STAG Deployment
 on:
   push:
     branches:
-      - "staging"
+      - "main"
     tags:
       - 'v*-stag*'
 
