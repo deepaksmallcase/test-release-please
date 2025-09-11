@@ -29,6 +29,8 @@ jobs:
         with:
           release-type: node
           prerelease: true
+          prerelease-type: stag
+          skip-github-pull-request: true
         id: release
 
       - name: Install dependencies
