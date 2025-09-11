@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.0-rc.1](https://github.com/deepaksmallcase/test-release-please/compare/v1.10.0-rc...v1.10.0-rc.1) (2025-09-11)
+
+
+### Bug Fixes
+
+* bb ([4584ee8](https://github.com/deepaksmallcase/test-release-please/commit/4584ee8df15b41a530357c6d1711ea48966a4817))
+* nsands ([9dad70a](https://github.com/deepaksmallcase/test-release-please/commit/9dad70ae2c953a7641aad1724079a502215ec11c))
+
 ## [1.10.0-rc](https://github.com/deepaksmallcase/test-release-please/compare/v1.9.0...v1.10.0-rc) (2025-09-11)
 
 
