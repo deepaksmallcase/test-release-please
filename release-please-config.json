@@ -29,7 +29,8 @@
       "release-type": "node",
       "package-name": "react-webpack-demo",
       "extra-files": [
-        "package.json"
+        "package.json",
+        "public/release_version.json"
       ]
     }
   }
