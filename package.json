@@ -1,7 +1,7 @@
 {
   "name": "react-webpack-demo",
-  "version": "1.7.0",
-  "description": "A simple webpack-based React app with routing",
+  "version": "1.9.0-stag.3",
+  "description": "A simple webpack-based Reac app with routing",
   "repository": {
     "type": "git",
     "url": "https://github.com/yourusername/react-webpack-demo.git"

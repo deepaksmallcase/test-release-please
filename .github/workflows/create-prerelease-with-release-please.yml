@@ -1,0 +1,148 @@
+name: 'Create Pre-release with Release-Please'
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        required: true
+        default: 'stag'
+        description: 'Environment for pre-release'
+        options:
+          - dev
+          - stag
+          - beta
+      branch:
+        type: string
+        required: true
+        default: 'main'
+        description: 'Branch to create pre-release from'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  create-prerelease:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch }}
+          fetch-depth: '0'
+          token: ${{ secrets.PRE_RELEASE_TAG_ACTION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'package.json'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Create Pre-release with Release-Please
+        env:
+          GITHUB_TOKEN: ${{ secrets.PRE_RELEASE_TAG_ACTION }}
+        run: |
+          echo "🚀 Creating pre-release for ${{ github.event.inputs.environment }} environment"
+          echo "Branch: ${{ github.event.inputs.branch }}"
+          
+          # Let release-please handle version calculation automatically
+          echo "📋 Creating manifest file with current version from package.json..."
+          currentVersion=$(cat package.json | jq -r '.version')
+          
+          cat > .release-please-manifest.json << EOF
+          {
+            ".": "$currentVersion"
+          }
+          EOF
+          
+          echo "📦 Current version: $currentVersion"
+          echo "🔄 Release-please will automatically calculate pre-release version..."
+          
+          # Create temporary release-please config for this environment
+          cat > release-please-prerelease.json << EOF
+          {
+            "\$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+            "bootstrap-sha": "75e32df06af5f8023b7b38b38354751d7223fce4",
+            "include-component-in-tag": false,
+            "changelog-path": "CHANGELOG.md",
+            "branches": [
+              { 
+                "branch": "${{ github.event.inputs.branch }}", 
+                "prerelease": true,
+                "prerelease-label": "${{ github.event.inputs.environment }}"
+              }
+            ],
+            "packages": {
+              ".": {
+                "release-type": "node",
+                "package-name": "react-webpack-demo",
+                "prerelease": true,
+                "prerelease-type": "${{ github.event.inputs.environment }}",
+                "extra-files": [
+                  "package.json"
+                ]
+              }
+            }
+          }
+          EOF
+          
+          echo "✅ Created release-please config and manifest"
+          echo "🔄 Release-please will calculate next version automatically..."
+          
+          # Debug: Check if there are any conventional commits
+          echo "🔍 Checking for conventional commits..."
+          git log --oneline --since="1 week ago" | head -10
+          
+          # Let release-please handle version calculation and release creation
+          # Use --prerelease flag to force pre-release creation
+          if npx release-please github-release \
+            --config-file=release-please-prerelease.json \
+            --manifest-file=.release-please-manifest.json \
+            --repo-url=https://github.com/deepaksmallcase/test-release-please \
+            --token=$GITHUB_TOKEN \
+            --target-branch=${{ github.event.inputs.branch }} \
+            --prerelease; then
+            
+            echo "✅ Release-please completed successfully!"
+            
+            # Get the new version from updated manifest (release-please updates it)
+            newVersion=$(cat .release-please-manifest.json | jq -r '."."')
+            newTag="v$newVersion"
+            
+            echo "🏷️ Release-please calculated new version: $newVersion"
+            echo "📦 Version progression: $currentVersion → $newVersion"
+            
+            # Create local tag if it doesn't exist (release-please might not create local tag)
+            if ! git tag -l | grep -q "^$newTag$"; then
+              echo "🏷️ Creating local tag: $newTag"
+              git tag $newTag
+            else
+              echo "🏷️ Local tag already exists: $newTag"
+            fi
+            
+            # Push the tag to trigger deployment
+            echo "📤 Pushing tag to trigger ${{ github.event.inputs.environment }} deployment..."
+            git push origin $newTag
+            
+            echo "✅ Tag $newTag pushed successfully!"
+            echo "🚀 This will trigger the ${{ github.event.inputs.environment }}-deployment.yml workflow"
+            
+          else
+            echo "⚠️ No release created - this usually means no releasable changes found"
+            echo "💡 Release-please looks for conventional commits (feat:, fix:, etc.)"
+            echo "✅ Checking existing tags..."
+            git tag --sort=-version:refname | head -5
+          fi
+          
+          echo "🌍 Environment: ${{ github.event.inputs.environment }}"
+          echo "🌿 Branch: ${{ github.event.inputs.branch }}"
+
+      - name: Cleanup
+        if: always()
+        run: |
+          rm -f release-please-prerelease.json
+          rm -f .release-please-manifest.json
+          echo "🧹 Cleaned up temporary files"

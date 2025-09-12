@@ -1,0 +1,349 @@
+name: Prerelease Deploy
+
+on:
+  # Only allow manual trigger with environment selection
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'stag'
+        type: choice
+        options:
+          - stag
+          - dev
+          - beta
+
+# The different jobs of this workflow need the following permissions
+permissions:
+  contents: write
+  pull-requests: write
+  repository-projects: read
+  # only required for workflows in private repositories
+  actions: read
+
+concurrency:
+  group: prerelease
+
+jobs:
+  # This job creates the necessary labels for the release-please PRs
+  label-check:
+    name: Create release-please PR labels
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Add labels to the repository if not present
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create "autorelease: pending" -c FBCA04 -d "release-please PR tagging - Pending release" || true
+          gh label create "autorelease: tagged" -c D4C5F9 -d "release-please PR tagging - Ready for release" || true
+          gh label create "autorelease: snapshot" -c D4C5F9 -d "release-please PR tagging - Ready for release" || true
+          gh label create "autorelease: published" -c 0E8A16 -d "release-please PR tagging - Released" || true
+
+  # This job creates or finalizes a prerelease pull request
+  prerelease-prep:
+    name: Create Prerelease Pull Request
+    runs-on: ubuntu-latest
+    needs: [ label-check ]
+    outputs:
+      releases_created: ${{ steps.fallback-tag.outputs.releases_created }}
+      tag_name: ${{ steps.fallback-tag.outputs.tag_name }}
+      environment: ${{ steps.env.outputs.environment }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set Environment
+        id: env
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "environment=${{ github.event.inputs.environment }}" >> $GITHUB_OUTPUT
+          else
+            echo "environment=stag" >> $GITHUB_OUTPUT
+          fi
+          echo "Selected environment: ${{ steps.env.outputs.environment }}"
+          echo "Using config: .github/prerelease-config-${{ steps.env.outputs.environment }}.json"
+          echo "Using manifest: .github/prerelease-manifest-${{ steps.env.outputs.environment }}.json"
+          echo "Skip PR creation: true (direct tag creation)"
+
+      - name: Debug Environment and Config
+        run: |
+          echo "Environment: ${{ steps.env.outputs.environment }}"
+          echo "Config file: .github/prerelease-config-${{ steps.env.outputs.environment }}.json"
+          echo "Manifest file: .github/prerelease-manifest-${{ steps.env.outputs.environment }}.json"
+          echo "Current package.json version: $(node -p "require('./package.json').version")"
+          echo "Config file contents:"
+          cat ".github/prerelease-config-${{ steps.env.outputs.environment }}.json"
+          echo "Manifest file contents:"
+          cat ".github/prerelease-manifest-${{ steps.env.outputs.environment }}.json"
+
+      - name: Check Recent Commits
+        run: |
+          echo "=== RECENT COMMITS ANALYSIS ==="
+          echo "Last 10 commits:"
+          git log --oneline -10
+          echo ""
+          echo "Commits since last tag:"
+          git log --oneline $(git describe --tags --abbrev=0 2>/dev/null || echo "HEAD~10")..HEAD || echo "No previous tags found"
+          echo ""
+          echo "Conventional commits in recent history:"
+          git log --grep="^feat\|^fix\|^chore\|^docs\|^style\|^refactor\|^perf\|^test" --oneline -10 || echo "No conventional commits found"
+          echo "================================="
+
+      - id: release
+        name: Create Prerelease Tag and Update Files
+        env:
+          GITHUB_TOKEN: ${{ secrets.PRE_RELEASE_TAG_ACTION }}
+        run: |
+          echo "🚀 Creating pre-release for ${{ steps.env.outputs.environment }} environment"
+          
+          # Get current version from package.json
+          currentVersion=$(cat package.json | jq -r '.version')
+          echo "📦 Current version: $currentVersion"
+          
+          # Use existing environment-specific config and manifest files
+          CONFIG_FILE=".github/prerelease-config-${{ steps.env.outputs.environment }}.json"
+          MANIFEST_FILE=".github/prerelease-manifest-${{ steps.env.outputs.environment }}.json"
+          
+          echo "📋 Using config: $CONFIG_FILE"
+          echo "📋 Using manifest: $MANIFEST_FILE"
+          
+          # Use release-please to create the next prerelease version and tag directly
+          echo "🔄 Creating next prerelease version and tag..."
+          
+          # Calculate next version using release-please
+          echo "📋 Calculating next version for ${{ steps.env.outputs.environment }} environment..."
+          
+          # Get the current version from manifest
+          currentManifestVersion=$(cat "$MANIFEST_FILE" | jq -r '."."')
+          echo "📦 Current manifest version: $currentManifestVersion"
+          
+          # Use release-please to calculate next version without creating PR
+          if npx release-please release \
+            --config-file="$CONFIG_FILE" \
+            --manifest-file="$MANIFEST_FILE" \
+            --repo-url=https://github.com/deepaksmallcase/test-release-please \
+            --token=$GITHUB_TOKEN \
+            --target-branch=main \
+            --prerelease \
+            --skip-github-release; then
+            
+            # Get the new version from updated manifest
+            newVersion=$(cat "$MANIFEST_FILE" | jq -r '."."')
+            newTag="v$newVersion"
+            
+            echo "✅ Release-please calculated new version: $newVersion"
+            echo "📦 Version progression: $currentManifestVersion → $newVersion"
+            echo "🏷️ New tag will be: $newTag"
+            
+            # Update package.json with new version
+            echo "🔄 Updating package.json..."
+            jq --arg version "$newVersion" '.version = $version' package.json > package.json.tmp && mv package.json.tmp package.json
+            updatedPackageVersion=$(cat package.json | jq -r '.version')
+            echo "📦 Package.json updated to: $updatedPackageVersion"
+            
+            # Commit and push the changes
+            echo "🔄 Committing and pushing changes..."
+            git config --local user.email "action@github.com"
+            git config --local user.name "GitHub Action"
+            git add package.json "$MANIFEST_FILE" CHANGELOG.md
+            git commit -m "chore: bump version to $newVersion for ${{ steps.env.outputs.environment }} prerelease" || echo "No changes to commit"
+            git push origin main
+            
+            # Create the Git tag
+            echo "🔄 Creating Git tag: $newTag"
+            git tag "$newTag"
+            git push origin "$newTag"
+            echo "✅ Git tag created and pushed: $newTag"
+            
+            # Create GitHub release
+            echo "🔄 Creating GitHub release..."
+            if npx release-please github-release \
+              --config-file="$CONFIG_FILE" \
+              --manifest-file="$MANIFEST_FILE" \
+              --repo-url=https://github.com/deepaksmallcase/test-release-please \
+              --token=$GITHUB_TOKEN \
+              --target-branch=main \
+              --prerelease; then
+              
+              echo "✅ GitHub release created successfully!"
+              echo "🏷️ Tag: $newTag"
+              echo "🔗 Check releases at: https://github.com/deepaksmallcase/test-release-please/releases"
+              
+              # Verify the tag was created
+              echo "🔍 Verifying tag creation..."
+              if git ls-remote --tags origin | grep -q "refs/tags/$newTag"; then
+                echo "✅ Tag $newTag confirmed on remote repository"
+              else
+                echo "⚠️ Tag $newTag not found on remote (might take a moment to propagate)"
+              fi
+              
+              # Set outputs for next jobs
+              echo "releases_created=true" >> $GITHUB_OUTPUT
+              echo "tag_name=$newTag" >> $GITHUB_OUTPUT
+              echo "version=$newVersion" >> $GITHUB_OUTPUT
+              
+            else
+              echo "⚠️ Failed to create GitHub release, but tag was created"
+              echo "releases_created=false" >> $GITHUB_OUTPUT
+              echo "tag_name=$newTag" >> $GITHUB_OUTPUT
+              echo "version=$newVersion" >> $GITHUB_OUTPUT
+            fi
+            
+          else
+            echo "⚠️ No release created - this usually means no releasable changes found"
+            echo "💡 Release-please looks for conventional commits (feat:, fix:, etc.)"
+            echo "releases_created=false" >> $GITHUB_OUTPUT
+            echo "tag_name=" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Debug Release Please Outputs
+        run: |
+          echo "=== RELEASE PLEASE DEBUG OUTPUTS ==="
+          echo "releases_created: ${{ steps.release.outputs.releases_created }}"
+          echo "tag_name: ${{ steps.release.outputs.tag_name }}"
+          echo "version: ${{ steps.release.outputs.version }}"
+          echo "upload_url: ${{ steps.release.outputs.upload_url }}"
+          echo "id: ${{ steps.release.outputs.id }}"
+          echo "html_url: ${{ steps.release.outputs.html_url }}"
+          echo "name: ${{ steps.release.outputs.name }}"
+          echo "body: ${{ steps.release.outputs.body }}"
+          echo "draft: ${{ steps.release.outputs.draft }}"
+          echo "prerelease: ${{ steps.release.outputs.prerelease }}"
+          echo "target_commitish: ${{ steps.release.outputs.target_commitish }}"
+          echo "created_at: ${{ steps.release.outputs.created_at }}"
+          echo "published_at: ${{ steps.release.outputs.published_at }}"
+          echo "====================================="
+          
+          # Additional verification
+          echo "=== TAG VERIFICATION ==="
+          if [ -n "${{ steps.release.outputs.tag_name }}" ]; then
+            echo "✅ Tag name is set: ${{ steps.release.outputs.tag_name }}"
+            echo "🔗 GitHub releases: https://github.com/deepaksmallcase/test-release-please/releases"
+            echo "🏷️ Tag URL: https://github.com/deepaksmallcase/test-release-please/releases/tag/${{ steps.release.outputs.tag_name }}"
+          else
+            echo "❌ Tag name is empty - check if release was created successfully"
+          fi
+          echo "========================="
+
+      
+
+  # This job runs tests and creates the prerelease
+  prerelease:
+    name: Create Prerelease
+    runs-on: ubuntu-latest
+    needs: [ prerelease-prep ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm run test
+
+      - name: Build application for ${{ needs.prerelease-prep.outputs.environment }}
+        run: |
+          case "${{ needs.prerelease-prep.outputs.environment }}" in
+            "stag")
+              npm run build:stag
+              ;;
+            "dev")
+              npm run build:dev
+              ;;
+            "beta")
+              npm run build:prod
+              ;;
+            *)
+              npm run build:stag
+              ;;
+          esac
+
+      - name: Log Prerelease Status
+        run: |
+          echo "=========================================="
+          echo "🚀 PRERELEASE WORKFLOW STATUS"
+          echo "=========================================="
+          echo "🏷️  Tag: ${{ needs.prerelease-prep.outputs.tag_name }}"
+          echo "📦 Environment: ${{ needs.prerelease-prep.outputs.environment }}"
+          echo "📅 Processed at: $(date)"
+          echo "🔗 Repository: ${{ github.repository }}"
+          echo "👤 Triggered by: ${{ github.actor }}"
+          echo "🌿 Branch: ${{ github.ref_name }}"
+          echo "📝 Commit: ${{ github.sha }}"
+          echo "=========================================="
+          
+          # Log to GitHub Actions summary
+          echo "## 🚀 Prerelease Workflow Completed!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📋 Details" >> $GITHUB_STEP_SUMMARY
+          echo "- **Tag**: \`${{ needs.prerelease-prep.outputs.tag_name }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Environment**: \`${{ needs.prerelease-prep.outputs.environment }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Processed at**: \`$(date)\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Triggered by**: \`${{ github.actor }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch**: \`${{ github.ref_name }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit**: \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🎯 Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "1. Review the generated changelog in the PR" >> $GITHUB_STEP_SUMMARY
+          echo "2. Merge the release PR to create the actual tag" >> $GITHUB_STEP_SUMMARY
+          echo "3. Deploy to \`${{ needs.prerelease-prep.outputs.environment }}\` environment" >> $GITHUB_STEP_SUMMARY
+
+      - name: Deploy to ${{ needs.prerelease-prep.outputs.environment }}
+        run: |
+          echo "🚀 Deploying to ${{ needs.prerelease-prep.outputs.environment }} environment..."
+          echo "📦 Tag: ${{ needs.prerelease-prep.outputs.tag_name }}"
+          echo "🏷️  Prerelease Tag Format: 1.x.x-${{ needs.prerelease-prep.outputs.environment }}.X"
+          echo "📊 Current Tag: ${{ needs.prerelease-prep.outputs.tag_name }}"
+          
+          # Add your deployment logic here based on environment
+          case "${{ needs.prerelease-prep.outputs.environment }}" in
+            "stag")
+              echo "Deploying to staging environment..."
+              # Add staging deployment commands here
+              ;;
+            "dev")
+              echo "Deploying to development environment..."
+              # Add dev deployment commands here
+              ;;
+            "beta")
+              echo "Deploying to beta environment..."
+              # Add beta deployment commands here
+              ;;
+            *)
+              echo "Deploying to default (staging) environment..."
+              # Add default deployment commands here
+              ;;
+          esac
+          
+          echo "✅ Deployment to ${{ needs.prerelease-prep.outputs.environment }} completed!"
+
+  # This job runs post-prerelease steps
+  post-prerelease:
+    name: Post Prerelease Steps
+    runs-on: ubuntu-latest
+    needs: [ prerelease ]
+    steps:
+      - name: Post Prerelease Step
+        run: |
+          echo "🎉 Post-prerelease steps completed!"
+          echo "📦 Tag: ${{ needs.prerelease-prep.outputs.tag_name }}"
+          echo "🌍 Environment: ${{ needs.prerelease-prep.outputs.environment }}"
+          echo "✅ Prerelease deployment completed successfully!"
+          
+          # Log final summary
+          echo "## 🎉 Prerelease Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status**: ✅ Completed Successfully" >> $GITHUB_STEP_SUMMARY
+          echo "- **Tag**: \`${{ needs.prerelease-prep.outputs.tag_name }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Environment**: \`${{ needs.prerelease-prep.outputs.environment }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Completed at**: \`$(date)\`" >> $GITHUB_STEP_SUMMARY

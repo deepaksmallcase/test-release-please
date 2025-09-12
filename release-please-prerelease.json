@@ -17,11 +17,11 @@
     { "type": "test", "section": "Tests", "hidden": true }
   ],
   "branches": [
-    { "branch": "prod" },
-    { 
-      "branch": "main", 
+    {
+      "branch": "main",
       "prerelease": true,
-      "prerelease-label": "stag"
+      "prerelease-label": "stag",
+      "prerelease-type": "pre"
     }
   ],
   "packages": {
@@ -29,10 +29,8 @@
       "release-type": "node",
       "package-name": "react-webpack-demo",
       "extra-files": [
-        "package.json",
-        "public/release_version.json"
+        "package.json"
       ]
     }
   }
 }
-

@@ -2,22 +2,40 @@ name: STAG Deployment
 
 on:
   push:
-    tags:
-      - 'v*-stag*'
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
-  deploy-stag:
+  prerelease-and-deploy:
     runs-on: ubuntu-latest
     environment: staging
+    permissions:
+      contents: write
+      pull-requests: write
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          cache: 'npm'
+
+      - uses: google-github-actions/release-please-action@v4
+        with:
+          release-type: node
+          prerelease: true
+          prerelease-type: pre
+          prerelease-label: stag
+          config-file: release-please-prerelease.json
+          token: ${{ secrets.GITHUB_TOKEN }}
+          command: release-pr
+          skip-github-pull-request: true
+        id: release
 
       - name: Install dependencies
         run: npm ci
@@ -31,7 +49,7 @@ jobs:
       - name: Build for STAG
         run: |
           echo "Building for STAG environment..."
-          echo "Tag: ${{ github.ref_name }}"
+          echo "Tag: ${{ steps.release.outputs.tag_name }}"
           echo "Commit: ${{ github.sha }}"
           echo "Build completed successfully for STAG!"
 
@@ -39,7 +57,7 @@ jobs:
         run: |
           echo "Simulating STAG deployment..."
           echo "Environment: STAG"
-          echo "Tag: ${{ github.ref_name }}"
+          echo "Tag: ${{ steps.release.outputs.tag_name }}"
           echo "Commit: ${{ github.sha }}"
           echo "✅ STAG deployment simulation completed!"
 
@@ -47,6 +65,6 @@ jobs:
         run: |
           echo "✅ STAG deployment completed successfully!"
           echo "Environment: STAG"
-          echo "Tag: ${{ github.ref_name }}"
+          echo "Tag: ${{ steps.release.outputs.tag_name }}"
           echo "Commit: ${{ github.sha }}"
-          # Add Mattermost/Slack notification here 
+          # Add Mattermost/Slack notification here

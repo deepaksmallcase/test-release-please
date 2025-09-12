@@ -35,11 +35,18 @@ module.exports = {
     }),
   ],
   devServer: {
-    static: {
-      directory: path.join(__dirname, 'public'),
-    },
+    static: [
+      {
+        directory: path.join(__dirname, 'public'),
+        publicPath: '/',
+      }
+    ],
     port: 3000,
     hot: true,
-    historyApiFallback: true,
+    historyApiFallback: {
+      rewrites: [
+        { from: /^\/release_version$/, to: '/release_version.json' }
+      ]
+    },
   },
 }; 

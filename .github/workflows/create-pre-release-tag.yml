@@ -1,9 +1,6 @@
-name: 'Auto Pre-release Tag on Main Branch'
+name: 'App: Create Pre-release Tag'
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
     inputs:
       deploymentEnv:
@@ -16,39 +13,22 @@ on:
           - stag
           - beta
 
-permissions:
-  contents: write
-  pull-requests: write
-
 jobs:
   create-tag:
     runs-on: ubuntu-latest
     steps:
+      - run: echo "Running create-pre-release-tag to deploy on ${{ github.event.inputs.deploymentEnv }}"
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: '0'
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{secrets.PRE_RELEASE_TAG_ACTION}}
 
       - name: Setup node
         uses: actions/setup-node@v4
         with:
-          node-version-file: 'package.json'
+          node-version-file: 'package.json' # setup node using volta config
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Configure Git
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-
-      - name: Auto-generate Pre-release Tag
-        run: |
-          if [ "${{ github.event_name }}" = "push" ]; then
-            echo "🚀 Auto-creating pre-release tag for main branch deployment"
-            npm run release:pre stag
-          else
-            echo "🚀 Manual pre-release tag creation for ${{ github.event.inputs.deploymentEnv }}"
-            npm run release:pre ${{ github.event.inputs.deploymentEnv }}
-          fi 
+      - name: Generate Git Tag
+        run: npm run release:pre ${{ github.event.inputs.deploymentEnv }} 
