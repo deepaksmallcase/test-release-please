@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
 ## [1.9.0-stag.3](https://github.com/deepaksmallcase/test-release-please/compare/v1.9.0-stag.2...v1.9.0-stag.3) (2025-09-11)
 
 
@@ -181,9 +182,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * fixxx ([e4d6e1b](https://github.com/deepaksmallcase/test-release-please/commit/e4d6e1b1acbffa33d7367c6df13d8afdfca1f00f))
 
 ## [1.9.0-stag.1](https://github.com/deepaksmallcase/test-release-please/compare/react-webpack-demo-v1.9.0-stag.0...react-webpack-demo-v1.9.0-stag.1) (2025-09-11)
+=======
+## [1.7.0](https://github.com/deepaksmallcase/test-release-please/compare/v1.6.0...v1.7.0) (2025-09-09)
+
 
 
 ### Features
+
 
 * add comprehensive deployment setup with multi-environment workflows ([be64af7](https://github.com/deepaksmallcase/test-release-please/commit/be64af7c8ca425e68d10d946ca4f57c288ce21df))
 * add pre-release tagging support with release-please integration and new scripts ([b27ad23](https://github.com/deepaksmallcase/test-release-please/commit/b27ad23c5f89c0708bf19e9a07ebb67656463c97))
@@ -259,9 +264,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * enhance pre-release versioning logic in deployment utilities and scripts ([89fcae0](https://github.com/deepaksmallcase/test-release-please/commit/89fcae07f0e9bffde154df8745991991dbaf2f96))
 * **Home:** update heading and message format in Home component ([6406c25](https://github.com/deepaksmallcase/test-release-please/commit/6406c257cccbe8e70f0c9ead8d2e69683bfcf34b))
 * simplify deployment workflows for testing without Docker/nginx ([14f6f5c](https://github.com/deepaksmallcase/test-release-please/commit/14f6f5cf8bf116ef41195857b5301738277e5185))
+=======
+* implement automated pre-release deployment system with GitHub Actions ([9021936](https://github.com/deepaksmallcase/test-release-please/commit/9021936f960dab51d29236f1428c591d8941b6ef))
+* implement automated pre-release deployment system with GitHub Actions integration ([e1b16fa](https://github.com/deepaksmallcase/test-release-please/commit/e1b16faaac6721ea95bde1283cda92fbc0ac9dd8))
+
 
 
 ### Miscellaneous Chores
+
 
 * add debug logging for conventional commits and enable prerelease flag in workflow ([9ed1a01](https://github.com/deepaksmallcase/test-release-please/commit/9ed1a017b87f5f69255d5ea0ee556933e6f92853))
 * bump version to 1.6.1-stag.0 ([b011f13](https://github.com/deepaksmallcase/test-release-please/commit/b011f131ef9c07dc272bd45ef1026aa192913316))
@@ -380,9 +390,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * update stag deployment configuration to include prerelease type and skip pull request ([a2b7684](https://github.com/deepaksmallcase/test-release-please/commit/a2b7684a4b28f09529168ec6611777ad626b142b))
 
 ## [1.9.0](https://github.com/deepaksmallcase/test-release-please/compare/v1.8.2...v1.9.0) (2025-09-11)
+=======
+* bump version to 1.6.1-stag.0 ([b011f13](https://github.com/deepaksmallcase/test-release-please/commit/b011f131ef9c07dc272bd45ef1026aa192913316))
+* bump version to 1.6.1-stag.1 ([9dd8475](https://github.com/deepaksmallcase/test-release-please/commit/9dd84757508633d29442122c9c5f4e88ec2ae521))
+* update GitHub Actions workflow to include permissions and configure Git settings for pre-release tagging ([78d24a1](https://github.com/deepaksmallcase/test-release-please/commit/78d24a1ab3afecdd0bec861107113f73a3df9b89))
+
+## [1.6.0](https://github.com/deepaksmallcase/test-release-please/compare/v1.5.0...v1.6.0) (2025-09-03)
+
 
 
 ### Features
+
 
 * dsd ([fb5242c](https://github.com/deepaksmallcase/test-release-please/commit/fb5242c418e6ff53523c428a0ddc8d07d66f039a))
 
@@ -422,11 +440,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * implement automated pre-release deployment system with GitHub Actions integration ([e1b16fa](https://github.com/deepaksmallcase/test-release-please/commit/e1b16faaac6721ea95bde1283cda92fbc0ac9dd8))
 * new div in home ([11fda56](https://github.com/deepaksmallcase/test-release-please/commit/11fda56266b8464533c8fc67461b08aaa1a8d0c4))
 * test release please setup with conventional commit ([f121ccc](https://github.com/deepaksmallcase/test-release-please/commit/f121ccc8717e99a7570f3df9bf6e27b49eefa2e8))
+=======
+* **Deepak:** update component to display greeting and title ([4103972](https://github.com/deepaksmallcase/test-release-please/commit/410397221b3201ed1de7a1d093ad22d0e3a3deae))
+
 
 
 ### Bug Fixes
 
 * **About:** update heading text in About component ([af178f5](https://github.com/deepaksmallcase/test-release-please/commit/af178f58646a38e89df64bcdcd5eaf9b36080535))
+
 * calcualt enew tag ([8f37660](https://github.com/deepaksmallcase/test-release-please/commit/8f37660e20c135d3fad88895b35509cce13806d5))
 * change to main ([d80ae20](https://github.com/deepaksmallcase/test-release-please/commit/d80ae204246c6dee6ae5a634df187250b3990d5f))
 * correct release-please configuration for prod branch deployment ([57e91b3](https://github.com/deepaksmallcase/test-release-please/commit/57e91b38d5fe3f76e053baafbe315ac9aef590ba))
@@ -467,6 +489,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * add testing guide for deployment workflows ([b088144](https://github.com/deepaksmallcase/test-release-please/commit/b08814406384434a8a61d81dd3cbf0a7bdf5ab33))
 * update README with branching strategy and release management ([14bc3c2](https://github.com/deepaksmallcase/test-release-please/commit/14bc3c2175a964fffee7ea559008e430becd0ed3))
+=======
+
 
 
 ### Refactoring
@@ -582,6 +606,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * **About:** update heading text in About component ([af178f5](https://github.com/deepaksmallcase/test-release-please/commit/af178f58646a38e89df64bcdcd5eaf9b36080535))
 * runs on ([acb8a7e](https://github.com/deepaksmallcase/test-release-please/commit/acb8a7e85c03988ea2fefba5e6bdf9632386a94e))
 * runs on ([7d19920](https://github.com/deepaksmallcase/test-release-please/commit/7d1992023579cc9b8527d31dbe5594cce6d019f1))
+=======
+* **Home:** update heading and message format in Home component ([6406c25](https://github.com/deepaksmallcase/test-release-please/commit/6406c257cccbe8e70f0c9ead8d2e69683bfcf34b))
+
 
 ## [1.5.0](https://github.com/deepaksmallcase/test-release-please/compare/v1.4.1...v1.5.0) (2025-08-10)
 
