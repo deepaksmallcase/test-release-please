@@ -14,17 +14,20 @@ jobs:
   release-please:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          ref: ${{ github.head_ref }}
 
-      - name: Release Please (manifest mode)
-        uses: google-github-actions/release-please-action@v4
+      - name: Setup node
+        uses: actions/setup-node@v4
         with:
-          token: ${{ secrets.PRE_RELEASE_TAG_ACTION }}
+          node-version-file: 'package.json'
+
+      - uses: google-github-actions/release-please-action@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           command: manifest
+          release-type: node
+          package-name: release-please-action
           default-branch: prod
-          target-branch: prod
-          config-file: release-please-config.json
-          manifest-file: .release-please-manifest.json

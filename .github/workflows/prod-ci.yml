@@ -1,40 +1,65 @@
-name: Prod CI on Tag
+name: Deploy Production build
 
 on:
   push:
     tags:
-      - 'v*.*.*'
-
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: environment
+        required: true
+        default: production
 jobs:
-  build-and-deploy:
+  setup:
     runs-on: ubuntu-latest
-    environment: production
-    if: ${{ !contains(github.ref, '-') }}
+    environment: ${{ inputs.environment || 'production' }}
+    env:
+      DGN: ${{ vars.DGN || 'production' }}
+    strategy:
+      matrix:
+        node-version: [20.x]
+    permissions:
+      id-token: write
+      contents: read
+      packages: read
+
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          persist-credentials: false
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup Node.js (Dummy)
+        uses: actions/setup-node@v3
         with:
-          node-version: '18'
-          cache: 'npm'
+          node-version: ${{ matrix.node-version }}
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build
-        run: npm run build
-
-      - name: Tests
-        run: npm test --if-present
-
-      - name: Deploy using tag
-        env:
-          RELEASE_TAG: ${{ github.ref_name }}
+      - name: Test Tag Trigger (Dummy)
         run: |
-          echo "Deploying production for tag $RELEASE_TAG"
-          # Insert real deploy steps here
+          echo "🚀 Testing auto-trigger on tag creation!"
+          echo "Tag: ${{ github.ref_name }}"
+          echo "Repository: ${{ github.repository }}"
+          echo "Workflow: ${{ github.workflow }}"
+          echo "Actor: ${{ github.actor }}"
+          echo "Event: ${{ github.event_name }}"
+          echo "✅ Dummy deployment test completed successfully!"
 
+      - name: Simulate Build Process (Dummy)
+        run: |
+          echo "📦 Simulating build process..."
+          echo "Node version: $(node --version)"
+          echo "NPM version: $(npm --version)"
+          echo "Current directory: $(pwd)"
+          echo "Files in current directory:"
+          ls -la
+          echo "✅ Build simulation completed!"
+
+      - name: Simulate Deployment (Dummy)
+        run: |
+          echo "🚀 Simulating deployment process..."
+          echo "Environment: ${{ inputs.environment || 'production' }}"
+          echo "DGN: ${{ vars.DGN || 'production' }}"
+          echo "Would deploy to: s3://dummy-bucket/test-release-please"
+          echo "✅ Deployment simulation completed!"
