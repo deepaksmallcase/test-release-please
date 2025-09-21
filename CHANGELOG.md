@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.12.1](https://github.com/deepaksmallcase/test-release-please/compare/v1.12.0...v1.12.1) (2025-09-21)
+
+
+### Bug Fixes
+
+* improve prod-ci workflow triggers and debugging ([a047e7f](https://github.com/deepaksmallcase/test-release-please/commit/a047e7f3ec78ae8da0a2d30f22d1141e6f8f3983))
+
 ## [1.12.0](https://github.com/deepaksmallcase/test-release-please/compare/v1.11.1...v1.12.0) (2025-09-21)
 
 
