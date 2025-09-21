@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.15.0](https://github.com/deepaksmallcase/test-release-please/compare/v1.14.3...v1.15.0) (2025-09-21)
+
+
+### Features
+
+* trigger release-please workflow test ([1603b55](https://github.com/deepaksmallcase/test-release-please/commit/1603b55739b8bc68f483e19ed530c4d98a7d39e8))
+
+
+### Bug Fixes
+
+* restore proper release-please workflow configuration ([189cc73](https://github.com/deepaksmallcase/test-release-please/commit/189cc7388e035375a6481b865df6b47b56b2259d))
+* test release-please with updated bootstrap-sha ([d8a8654](https://github.com/deepaksmallcase/test-release-please/commit/d8a86545d492ff04a03c224b671f0faa5cb809a8))
+* update bootstrap-sha for release-please ([c2748fb](https://github.com/deepaksmallcase/test-release-please/commit/c2748fbf2f4538e5cb0dcb1876972808f0c0c939))
+
 ## [1.14.3](https://github.com/deepaksmallcase/test-release-please/compare/v1.14.2...v1.14.3) (2025-09-21)
 
 
