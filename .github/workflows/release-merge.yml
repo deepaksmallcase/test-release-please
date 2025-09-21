@@ -1,6 +1,5 @@
-name: Release Please
+name: Release Merge
 
-# Force refresh: This workflow should ONLY run on prod branch pushes
 on:
   push:
     branches:
@@ -8,27 +7,28 @@ on:
 
 permissions:
   contents: write
-  pull-requests: write
 
 jobs:
-  release-please:
+  release-merge:
     runs-on: ubuntu-latest
+    if: contains(github.event.head_commit.message, 'chore(prod): release') || contains(github.event.head_commit.message, 'chore: release')
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
+          fetch-depth: 0
 
       - name: Setup node
         uses: actions/setup-node@v4
         with:
           node-version-file: 'package.json'
 
-      - name: Release Please - Create Release PR
+      - name: Release Please - Create Release
         uses: google-github-actions/release-please-action@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          command: manifest
+          command: release
           default-branch: prod
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
