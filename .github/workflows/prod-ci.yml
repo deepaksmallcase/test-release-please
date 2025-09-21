@@ -32,24 +32,39 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Setup AWS CLI
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
-          aws-region: ${{ vars.AWS_REGION }}
+      - name: Log AWS CLI Setup (Dummy)
+        run: |
+          echo "🔧 Would setup AWS CLI with:"
+          echo "  - Role: ${{ vars.AWS_IAM_ROLE }}"
+          echo "  - Region: ${{ vars.AWS_REGION }}"
+          echo "✅ AWS CLI setup simulation completed!"
 
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
+      - name: Log Node.js Setup (Dummy)
+        run: |
+          echo "📦 Would setup Node.js version: ${{ matrix.node-version }}"
+          echo "✅ Node.js setup simulation completed!"
 
-      - name: Fetch github package and deploy to s3
+      - name: Log Production Deployment (Dummy)
         env:
           PACKAGE_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
           SENTRY_AUTH_TOKEN: '${{ secrets.SENTRY_AUTH_TOKEN }}'
         run: |
-          echo "//npm.pkg.github.com/:_authToken=${PACKAGE_TOKEN}" > .npmrc && \
-          echo '@smallcase:registry=https://npm.pkg.github.com/' >> .npmrc && echo 'legacy-peer-deps=true' >> .npmrc && \
-          npm ci && \
-          source scripts/build-configs/lamf-production.config && \
-          sh scripts/deploy.sh
+          echo "🚀 Production Deployment Simulation:"
+          echo "  - Environment: ${{ inputs.environment || 'production' }}"
+          echo "  - DGN: ${{ vars.DGN || 'production' }}"
+          echo "  - Tag: ${{ github.ref_name }}"
+          echo "  - Event: ${{ github.event_name }}"
+          echo ""
+          echo "📋 Would execute deployment steps:"
+          echo "  1. Setup .npmrc with GitHub package auth"
+          echo "  2. Run: npm ci"
+          echo "  3. Source: scripts/build-configs/lamf-production.config"
+          echo "  4. Execute: sh scripts/deploy.sh"
+          echo ""
+          echo "🔐 Environment variables that would be used:"
+          echo "  - PACKAGE_TOKEN: ${PACKAGE_TOKEN:0:10}..."
+          echo "  - SENTRY_AUTH_TOKEN: ${SENTRY_AUTH_TOKEN:0:10}..."
+          echo "  - AWS_IAM_ROLE: ${{ vars.AWS_IAM_ROLE }}"
+          echo "  - AWS_REGION: ${{ vars.AWS_REGION }}"
+          echo ""
+          echo "✅ Production deployment simulation completed successfully!"
