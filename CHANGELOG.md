@@ -6,6 +6,38 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.14.0](https://github.com/deepaksmallcase/test-release-please/compare/v1.13.0...v1.14.0) (2025-09-21)
+
+
+### Features
+
+* test release-please with improved prod-ci integration ([d880b73](https://github.com/deepaksmallcase/test-release-please/commit/d880b737da615fa6b3ee3384652895a06d278ae6))
+
+
+### Bug Fixes
+
+* improve prod-ci workflow triggers and debugging ([a047e7f](https://github.com/deepaksmallcase/test-release-please/commit/a047e7f3ec78ae8da0a2d30f22d1141e6f8f3983))
+* improve prod-ci workflow triggers for release-please integration ([a4537c8](https://github.com/deepaksmallcase/test-release-please/commit/a4537c88171389b3e63b2dc5a408a7921be1331d))
+
+
+### Miscellaneous Chores
+
+* **prod:** release 1.12.0 ([2472d8f](https://github.com/deepaksmallcase/test-release-please/commit/2472d8fe763e3406ab4ae26c90fe9dccb8c2d681))
+* **prod:** release 1.12.1 ([85863fb](https://github.com/deepaksmallcase/test-release-please/commit/85863fb101a6978565dbf9ebae699bd8f2ad8bca))
+* **prod:** release 1.13.0 ([198d65d](https://github.com/deepaksmallcase/test-release-please/commit/198d65d57bf69bdcdd1258c00ab2c58ce710348f))
+
+## [1.13.0](https://github.com/deepaksmallcase/test-release-please/compare/v1.12.1...v1.13.0) (2025-09-21)
+
+
+### Features
+
+* test release-please with improved prod-ci integration ([d880b73](https://github.com/deepaksmallcase/test-release-please/commit/d880b737da615fa6b3ee3384652895a06d278ae6))
+
+
+### Bug Fixes
+
+* improve prod-ci workflow triggers for release-please integration ([a4537c8](https://github.com/deepaksmallcase/test-release-please/commit/a4537c88171389b3e63b2dc5a408a7921be1331d))
+
 ## [1.12.1](https://github.com/deepaksmallcase/test-release-please/compare/v1.12.0...v1.12.1) (2025-09-21)
 
 
