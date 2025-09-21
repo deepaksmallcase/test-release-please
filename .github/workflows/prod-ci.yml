@@ -3,87 +3,37 @@ name: Deploy Production build
 on:
   push:
     tags:
-      - 'v*.*.*'
-  release:
-    types: [published, created, prereleased]
-  workflow_dispatch:
-    inputs:
-      environment:
-        type: environment
-        required: false
-        default: production
-jobs:
-  setup:
-    runs-on: ubuntu-latest
-    # environment: ${{ inputs.environment || 'production' }}
-    if: |
-      github.event_name == 'workflow_dispatch' || 
-      github.event_name == 'push' || 
-      (github.event_name == 'release' && github.event.action == 'published')
-    env:
-      DGN: ${{ vars.DGN || 'production' }}
-    strategy:
-      matrix:
-        node-version: [20.x]
-    permissions:
-      id-token: write
-      contents: read
-      packages: read
+      - 'v[0-9]+.[0-9]+.[0-9]+'
 
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    if: ${{ !contains(github.ref, '-') }}
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          persist-credentials: false
 
-      - name: Setup Node.js (Dummy)
-        uses: actions/setup-node@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: '18'
+          cache: 'npm'
 
-      - name: Detect Trigger Source
-        run: |
-          echo "🚀 Production deployment triggered!"
-          echo "Event: ${{ github.event_name }}"
-          echo "GitHub Context:"
-          echo "  - Repository: ${{ github.repository }}"
-          echo "  - Actor: ${{ github.actor }}"
-          echo "  - Ref: ${{ github.ref }}"
-          echo "  - Ref Name: ${{ github.ref_name }}"
-          echo "  - Head Ref: ${{ github.head_ref }}"
-          echo "  - Base Ref: ${{ github.base_ref }}"
-          
-          if [ "${{ github.event_name }}" = "push" ]; then
-            echo "Triggered by: Tag push"
-            echo "Tag: ${{ github.ref_name }}"
-            echo "Full ref: ${{ github.ref }}"
-          elif [ "${{ github.event_name }}" = "release" ]; then
-            echo "Triggered by: Release event"
-            echo "Release Tag: ${{ github.event.release.tag_name }}"
-            echo "Release Title: ${{ github.event.release.name }}"
-            echo "Release Action: ${{ github.event.action }}"
-            echo "Release Body: ${{ github.event.release.body }}"
-          else
-            echo "Triggered by: Manual workflow dispatch"
-            echo "Environment: ${{ inputs.environment }}"
-          fi
-          echo "✅ Trigger detection completed!"
+      - name: Install dependencies
+        run: npm ci
 
-      - name: Simulate Build Process (Dummy)
-        run: |
-          echo "📦 Simulating build process..."
-          echo "Node version: $(node --version)"
-          echo "NPM version: $(npm --version)"
-          echo "Current directory: $(pwd)"
-          echo "Files in current directory:"
-          ls -la
-          echo "✅ Build simulation completed!"
+      - name: Build
+        run: npm run build
 
-      - name: Simulate Deployment (Dummy)
+      - name: Tests
+        run: npm test --if-present
+
+      - name: Deploy using tag
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
         run: |
-          echo "🚀 Simulating deployment process..."
-          echo "Environment: ${{ inputs.environment || 'production' }}"
-          echo "DGN: ${{ vars.DGN || 'production' }}"
-          echo "Would deploy to: s3://dummy-bucket/test-release-please"
-          echo "✅ Deployment simulation completed!"
+          echo "Deploying production for tag $RELEASE_TAG"
+          # Insert real deploy steps here
