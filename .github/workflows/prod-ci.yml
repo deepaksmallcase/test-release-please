@@ -5,17 +5,17 @@ on:
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+'
   release:
-    types: [published]
+    types: [published, created]
   workflow_dispatch:
     inputs:
       environment:
         type: environment
-        required: true
+        required: false
         default: production
 jobs:
   setup:
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment || 'production' }}
+    # environment: ${{ inputs.environment || 'production' }}
     env:
       DGN: ${{ vars.DGN || 'production' }}
     strategy:
@@ -42,19 +42,28 @@ jobs:
         run: |
           echo "🚀 Production deployment triggered!"
           echo "Event: ${{ github.event_name }}"
+          echo "GitHub Context:"
+          echo "  - Repository: ${{ github.repository }}"
+          echo "  - Actor: ${{ github.actor }}"
+          echo "  - Ref: ${{ github.ref }}"
+          echo "  - Ref Name: ${{ github.ref_name }}"
+          echo "  - Head Ref: ${{ github.head_ref }}"
+          echo "  - Base Ref: ${{ github.base_ref }}"
+          
           if [ "${{ github.event_name }}" = "push" ]; then
             echo "Triggered by: Tag push"
             echo "Tag: ${{ github.ref_name }}"
+            echo "Full ref: ${{ github.ref }}"
           elif [ "${{ github.event_name }}" = "release" ]; then
-            echo "Triggered by: Release published"
-            echo "Release: ${{ github.event.release.tag_name }}"
+            echo "Triggered by: Release event"
+            echo "Release Tag: ${{ github.event.release.tag_name }}"
             echo "Release Title: ${{ github.event.release.name }}"
+            echo "Release Action: ${{ github.event.action }}"
             echo "Release Body: ${{ github.event.release.body }}"
           else
             echo "Triggered by: Manual workflow dispatch"
+            echo "Environment: ${{ inputs.environment }}"
           fi
-          echo "Repository: ${{ github.repository }}"
-          echo "Actor: ${{ github.actor }}"
           echo "✅ Trigger detection completed!"
 
       - name: Simulate Build Process (Dummy)
