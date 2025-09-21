@@ -1,39 +1,55 @@
-name: Prod CI on Tag
+name: Deploy Production build
 
 on:
   push:
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+'
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: environment
+        required: true
+        default: production
 
 jobs:
-  build-and-deploy:
+  setup:
     runs-on: ubuntu-latest
-    environment: production
-    if: ${{ !contains(github.ref, '-') }}
+    environment: ${{ inputs.environment || 'production' }}
+    env:
+      DGN: ${{ vars.DGN || 'production' }}
+    strategy:
+      matrix:
+        node-version: [20.x]
+    permissions:
+      id-token: write
+      contents: read
+      packages: read
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          persist-credentials: false
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup AWS CLI
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          node-version: '18'
-          cache: 'npm'
+          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          aws-region: ${{ vars.AWS_REGION }}
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
 
-      - name: Build
-        run: npm run build
-
-      - name: Tests
-        run: npm test --if-present
-
-      - name: Deploy using tag
+      - name: Fetch github package and deploy to s3
         env:
-          RELEASE_TAG: ${{ github.ref_name }}
+          PACKAGE_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+          SENTRY_AUTH_TOKEN: '${{ secrets.SENTRY_AUTH_TOKEN }}'
         run: |
-          echo "Deploying production for tag $RELEASE_TAG"
-          # Insert real deploy steps here
+          echo "//npm.pkg.github.com/:_authToken=${PACKAGE_TOKEN}" > .npmrc && \
+          echo '@smallcase:registry=https://npm.pkg.github.com/' >> .npmrc && echo 'legacy-peer-deps=true' >> .npmrc && \
+          npm ci && \
+          source scripts/build-configs/lamf-production.config && \
+          sh scripts/deploy.sh
