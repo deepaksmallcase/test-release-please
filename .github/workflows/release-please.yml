@@ -5,9 +5,9 @@ on:
     branches:
       - prod
 
-# permissions:
-#   contents: write
-#   pull-requests: write
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
   release-please:
