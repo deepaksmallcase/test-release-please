@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.15.3](https://github.com/deepaksmallcase/test-release-please/compare/v1.15.2...v1.15.3) (2025-09-21)
+
+
+### Bug Fixes
+
+* rest ([1460cf1](https://github.com/deepaksmallcase/test-release-please/commit/1460cf1cad5c08650c020543a2508eeb0806f169))
+
 ## [1.15.2](https://github.com/deepaksmallcase/test-release-please/compare/v1.15.1...v1.15.2) (2025-09-21)
 
 
