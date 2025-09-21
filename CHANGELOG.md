@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.16.0](https://github.com/deepaksmallcase/test-release-please/compare/v1.15.8...v1.16.0) (2025-09-21)
+
+
+### Features
+
+* tume ([2b12633](https://github.com/deepaksmallcase/test-release-please/commit/2b1263318d95a36aba4f9c3e452ad6a39c74c6f7))
+
+
+### Bug Fixes
+
+* premis ([30446ed](https://github.com/deepaksmallcase/test-release-please/commit/30446ed564d86691903c538240ed464f606a2b2b))
+* resss ([ba6334e](https://github.com/deepaksmallcase/test-release-please/commit/ba6334e8baf4e2c65d4cf8ae5b79c64b4acbd277))
+
 ## [1.15.8](https://github.com/deepaksmallcase/test-release-please/compare/v1.15.7...v1.15.8) (2025-09-21)
 
 
