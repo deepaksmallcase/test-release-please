@@ -4,6 +4,8 @@ on:
   push:
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+'
+  release:
+    types: [published]
   workflow_dispatch:
     inputs:
       environment:
@@ -36,15 +38,24 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Test Tag Trigger (Dummy)
+      - name: Detect Trigger Source
         run: |
-          echo "🚀 Testing auto-trigger on tag creation!"
-          echo "Tag: ${{ github.ref_name }}"
-          echo "Repository: ${{ github.repository }}"
-          echo "Workflow: ${{ github.workflow }}"
-          echo "Actor: ${{ github.actor }}"
+          echo "🚀 Production deployment triggered!"
           echo "Event: ${{ github.event_name }}"
-          echo "✅ Dummy deployment test completed successfully!"
+          if [ "${{ github.event_name }}" = "push" ]; then
+            echo "Triggered by: Tag push"
+            echo "Tag: ${{ github.ref_name }}"
+          elif [ "${{ github.event_name }}" = "release" ]; then
+            echo "Triggered by: Release published"
+            echo "Release: ${{ github.event.release.tag_name }}"
+            echo "Release Title: ${{ github.event.release.name }}"
+            echo "Release Body: ${{ github.event.release.body }}"
+          else
+            echo "Triggered by: Manual workflow dispatch"
+          fi
+          echo "Repository: ${{ github.repository }}"
+          echo "Actor: ${{ github.actor }}"
+          echo "✅ Trigger detection completed!"
 
       - name: Simulate Build Process (Dummy)
         run: |
