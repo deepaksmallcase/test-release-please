@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.16.2](https://github.com/deepaksmallcase/test-release-please/compare/v1.16.1...v1.16.2) (2025-09-22)
+
+
+### Miscellaneous Chores
+
+* remove commented-out permissions from release-please workflow ([6ac1998](https://github.com/deepaksmallcase/test-release-please/commit/6ac199804aef1cd1ffc8b5f33d6becc9c5b6a00e))
+
 ## [1.16.1](https://github.com/deepaksmallcase/test-release-please/compare/v1.16.0...v1.16.1) (2025-09-21)
 
 
