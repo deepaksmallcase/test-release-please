@@ -26,10 +26,9 @@ jobs:
 
       - name: Trigger Production Deployment
         if: ${{ steps.release.outputs.release_created }}
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          event-type: trigger-prod-deployment
-          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
+        run: |
+          gh workflow run "Deploy Production build" --ref ${{ github.ref }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
         
