@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.22.5](https://github.com/deepaksmallcase/test-release-please/compare/v1.22.4...v1.22.5) (2025-09-22)
+
+
+### Bug Fixes
+
+* pp ([a97c173](https://github.com/deepaksmallcase/test-release-please/commit/a97c173aa43e0326b6769fe7f279242bb8aec16b))
+
+
+### Miscellaneous Chores
+
+* update GitHub Actions permissions for pull requests and issues ([17c9844](https://github.com/deepaksmallcase/test-release-please/commit/17c984440c39a4899a122e004fb5156d48ee0f24))
+
 ## [1.22.4](https://github.com/deepaksmallcase/test-release-please/compare/v1.22.3...v1.22.4) (2025-09-22)
 
 
