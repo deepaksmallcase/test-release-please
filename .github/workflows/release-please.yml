@@ -27,7 +27,6 @@ jobs:
           default-branch: prod
 
       - name: Trigger Production Deployment
-        if: ${{ steps.release.outputs.release_created }}
         run: |
           gh workflow run "Deploy Production build" --ref ${{ github.ref }} --repo ${{ github.repository }}
         env:
