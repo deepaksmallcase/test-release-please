@@ -55,7 +55,7 @@ jobs:
           echo "  - Tag: ${{ github.ref_name }}"
           echo "  - Event: ${{ github.event_name }}"
           echo ""
-          echo "📋 Would execute deployment steps:"
+          echo "📋 Would execute deployment steps :1 "
           echo "  1. Setup .npmrc with GitHub package auth"
           echo "  2. Run: npm ci"
           echo "  3. Source: scripts/build-configs/lamf-production.config"
