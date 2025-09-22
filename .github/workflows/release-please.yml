@@ -27,7 +27,7 @@ jobs:
       - name: Trigger Production Deployment
         if: ${{ steps.release.outputs.release_created }}
         run: |
-          gh workflow run "Deploy Production build" --ref ${{ github.ref }}
+          gh workflow run "Deploy Production build" --ref ${{ github.ref }} --repo ${{ github.repository }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
