@@ -15,24 +15,17 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       release_created: ${{ steps.release.outputs.release_created }}
+
     steps:
-      - uses: google-github-actions/release-please-action@v3
+      - name: Release Please
+        id: release
+        uses: google-github-actions/release-please-action@v3
         with:
           token: ${{ secrets.PRE_RELEASE_TAG_ACTION }}
           command: manifest
           release-type: node
           package-name: release-please-action
           default-branch: prod
-    # steps:
-    #   - name: Release Please
-    #     id: release
-    #     uses: google-github-actions/release-please-action@v3
-    #     with:
-    #       token: ${{ secrets.PRE_RELEASE_TAG_ACTION }}
-    #       command: manifest
-    #       release-type: node
-    #       package-name: release-please-action
-    #       default-branch: prod
 
   deploy:
     needs: release-please
