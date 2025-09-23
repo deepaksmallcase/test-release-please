@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.22.16](https://github.com/deepaksmallcase/test-release-please/compare/v1.22.15...v1.22.16) (2025-09-23)
+
+
+### Bug Fixes
+
+* llsad ([d80a451](https://github.com/deepaksmallcase/test-release-please/commit/d80a4512c729bbd40f5f99d340370a8153b4eb2a))
+* ppsads ([229393d](https://github.com/deepaksmallcase/test-release-please/commit/229393d33be52c6cac56e92caffddeaa0c54ad11))
+
+
+### Miscellaneous Chores
+
+* update release-please workflow to use PRE_RELEASE_TAG_ACTION token ([85b892d](https://github.com/deepaksmallcase/test-release-please/commit/85b892daebd70661c33e7b7062712de8b55dda4f))
+
 ## [1.22.15](https://github.com/deepaksmallcase/test-release-please/compare/v1.22.14...v1.22.15) (2025-09-23)
 
 
