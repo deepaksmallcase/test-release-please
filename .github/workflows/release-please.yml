@@ -5,14 +5,14 @@ on:
     branches:
       - prod
 
+permissions:
+  id-token: write
+  contents: write
+  packages: read
+
 jobs:
   release-please:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      actions: write
-      pull-requests: write
-      issues: write
     outputs:
       release_created: ${{ steps.release.outputs.release_created }}
     steps:
