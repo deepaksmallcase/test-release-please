@@ -5,18 +5,9 @@ on:
     branches:
       - prod
 
-permissions:
-  id-token: write
-  contents: write
-  packages: read
-
 jobs:
   release-please:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-      issues: write
     outputs:
       release_created: ${{ steps.release.outputs.release_created }}
 
@@ -25,7 +16,7 @@ jobs:
         id: release
         uses: google-github-actions/release-please-action@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PRE_RELEASE_TAG_ACTION }}
           command: manifest
           release-type: node
           package-name: release-please-action
