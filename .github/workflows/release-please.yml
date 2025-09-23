@@ -8,6 +8,11 @@ on:
 jobs:
   release-please:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write
+      pull-requests: write
+      issues: write
     outputs:
       release_created: ${{ steps.release.outputs.release_created }}
     steps:
@@ -21,11 +26,16 @@ jobs:
           package-name: release-please-action
           default-branch: prod
 
-      - name: Deploy to Production
-        if: ${{steps.release.outputs.release_created}}
-        uses: ./.github/workflows/prod-ci.yml
-        with: 
-          environment: production
+  deploy:
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created }}
+    uses: ./.github/workflows/prod-ci.yml
+    with:
+      environment: 'production'
+    permissions:
+      id-token: write
+      contents: read
+      packages: read
 
   # deploy:
   #   needs: release-please
