@@ -26,20 +26,10 @@ jobs:
           package-name: release-please-action
           default-branch: prod
 
-      - name: Deploy to Production
-        if: ${{steps.release.outputs.release_created}}
-        uses: ./.github/workflows/prod-ci.yml
-        with: 
-          environment: production
-
-  # deploy:
-  #   needs: release-please
-  #   if: ${{ needs.release-please.outputs.release_created }}
-  #   uses: ./.github/workflows/prod-ci.yml
-  #   permissions:
-  #     id-token: write
-  #     contents: read
-  #     packages: read
+  deploy:
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created }}
+    uses: ./.github/workflows/prod-ci.yml
         
 
 
@@ -72,11 +62,11 @@ jobs:
 #           package-name: release-please-action
 #           default-branch: prod
 
-#       - name: Trigger Production Deployment
-#         if: ${{ steps.release.outputs.release_created }}
-#         run: |
-#           gh workflow run "Deploy Production build" --ref ${{ github.ref }} --repo ${{ github.repository }}
-#         env:
-#           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Trigger Production Deployment
+      #   if: ${{ steps.release.outputs.release_created }}
+      #   run: |
+      #     gh workflow run "Deploy Production build" --ref ${{ github.ref }} --repo ${{ github.repository }}
+      #   env:
+      #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
         
