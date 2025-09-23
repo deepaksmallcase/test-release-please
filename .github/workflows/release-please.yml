@@ -23,6 +23,16 @@ jobs:
           release-type: node
           package-name: release-please-action
           default-branch: prod
+    # steps:
+    #   - name: Release Please
+    #     id: release
+    #     uses: google-github-actions/release-please-action@v3
+    #     with:
+    #       token: ${{ secrets.PRE_RELEASE_TAG_ACTION }}
+    #       command: manifest
+    #       release-type: node
+    #       package-name: release-please-action
+    #       default-branch: prod
 
   deploy:
     needs: release-please
