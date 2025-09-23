@@ -8,11 +8,6 @@ on:
 jobs:
   release-please:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      actions: write
-      pull-requests: write
-      issues: write
     outputs:
       release_created: ${{ steps.release.outputs.release_created }}
     steps:
@@ -20,16 +15,57 @@ jobs:
         id: release
         uses: google-github-actions/release-please-action@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PRE_RELEASE_TAG_ACTION }}
           command: manifest
           release-type: node
           package-name: release-please-action
           default-branch: prod
 
-      - name: Trigger Production Deployment
-        run: |
-          gh workflow run "Deploy Production build" --ref ${{ github.ref }} --repo ${{ github.repository }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  deploy:
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created }}
+    uses: ./.github/workflows/prod-ci.yml
+    permissions:
+      id-token: write
+      contents: read
+      packages: read
+        
+
+
+
+# name: Release Please
+
+# on:
+#   push:
+#     branches:
+#       - prod
+
+# jobs:
+#   release-please:
+#     runs-on: ubuntu-latest
+#     permissions:
+#       contents: write
+#       actions: write
+#       pull-requests: write
+#       issues: write
+#     outputs:
+#       release_created: ${{ steps.release.outputs.release_created }}
+#     steps:
+#       - name: Release Please
+#         id: release
+#         uses: google-github-actions/release-please-action@v3
+#         with:
+#           token: ${{ secrets.GITHUB_TOKEN }}
+#           command: manifest
+#           release-type: node
+#           package-name: release-please-action
+#           default-branch: prod
+
+#       - name: Trigger Production Deployment
+#         if: ${{ steps.release.outputs.release_created }}
+#         run: |
+#           gh workflow run "Deploy Production build" --ref ${{ github.ref }} --repo ${{ github.repository }}
+#         env:
+#           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
         
