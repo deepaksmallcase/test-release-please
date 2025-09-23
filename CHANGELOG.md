@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.22.18](https://github.com/deepaksmallcase/test-release-please/compare/v1.22.17...v1.22.18) (2025-09-23)
+
+
+### Miscellaneous Chores
+
+* update release-please workflow to use GITHUB_TOKEN instead of PRE_RELEASE_TAG_ACTION ([1d04042](https://github.com/deepaksmallcase/test-release-please/commit/1d04042166b7ce409f893cf7b0d77ba62f50646a))
+
 ## [1.22.17](https://github.com/deepaksmallcase/test-release-please/compare/v1.22.16...v1.22.17) (2025-09-23)
 
 
