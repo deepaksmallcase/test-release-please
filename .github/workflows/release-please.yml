@@ -26,16 +26,11 @@ jobs:
           package-name: release-please-action
           default-branch: prod
 
-  deploy:
-    needs: release-please
-    if: ${{ needs.release-please.outputs.release_created }}
-    uses: ./.github/workflows/prod-ci.yml
-    with:
-      environment: 'production'
-    permissions:
-      id-token: write
-      contents: read
-      packages: read
+      - name: Deploy to Production
+        if: ${{steps.release.outputs.release_created}}
+        uses: ./.github/workflows/prod-ci.yml
+        with: 
+          environment: production
 
   # deploy:
   #   needs: release-please
