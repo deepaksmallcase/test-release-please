@@ -27,7 +27,7 @@ jobs:
     if: ${{ needs.release-please.outputs.release_created }}
     permissions:
       id-token: write
-      contents: write
+      contents: read
       packages: read
     uses: ./.github/workflows/prod-ci.yml
         
