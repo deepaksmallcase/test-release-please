@@ -43,7 +43,7 @@ jobs:
           echo "This would create a PR to your infrastructure repository"
           echo "PR Title: BETA: Update to ${{ github.ref_name }}"
           echo "PR Body: Deploying ${{ github.ref_name }} to BETA"
-          echo "Waiting for code-owner approval..."
+          echo "Waiting for code-owner approvas,,ds..."
 
       - name: Notify BETA deployment
         run: |
