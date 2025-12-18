@@ -1,30 +1,72 @@
 name: Release Please
 
-# Force refresh: This workflow should ONLY run on prod branch pushes
 on:
   push:
     branches:
       - prod
 
-permissions:
-  contents: write
-  pull-requests: write
-
 jobs:
   release-please:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
 
-      - name: Release Please (manifest mode)
-        uses: google-github-actions/release-please-action@v4
+    steps:
+      - name: Release Please
+        id: release
+        uses: google-github-actions/release-please-action@v3
         with:
-          token: ${{ secrets.PRE_RELEASE_TAG_ACTION }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           command: manifest
+          release-type: node
+          package-name: release-please-action
           default-branch: prod
-          target-branch: prod
-          config-file: release-please-config.json
-          manifest-file: .release-please-manifest.json
+
+  deploy:
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created }}
+    permissions:
+      id-token: write
+      contents: read
+      packages: read
+    uses: ./.github/workflows/prod-ci.yml
+        
+
+
+
+# name: Release Please
+
+# on:
+#   push:
+#     branches:
+#       - prod
+
+# jobs:
+#   release-please:
+#     runs-on: ubuntu-latest
+#     permissions:
+#       contents: write
+#       actions: write
+#       pull-requests: write
+#       issues: write
+#     outputs:
+#       release_created: ${{ steps.release.outputs.release_created }}
+#     steps:
+#       - name: Release Please
+#         id: release
+#         uses: google-github-actions/release-please-action@v3
+#         with:
+#           token: ${{ secrets.GITHUB_TOKEN }}
+#           command: manifest
+#           release-type: node
+#           package-name: release-please-action
+#           default-branch: prod
+
+      # - name: Trigger Production Deployment
+      #   if: ${{ steps.release.outputs.release_created }}
+      #   run: |
+      #     gh workflow run "Deploy Production build" --ref ${{ github.ref }} --repo ${{ github.repository }}
+      #   env:
+      #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+        

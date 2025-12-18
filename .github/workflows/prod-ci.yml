@@ -1,40 +1,63 @@
-name: Prod CI on Tag
+name: Deploy Production build
 
 on:
-  push:
-    tags:
-      - 'v*.*.*'
+  workflow_dispatch:
+  workflow_call: 
 
 jobs:
-  build-and-deploy:
+  setup:
     runs-on: ubuntu-latest
-    environment: production
-    if: ${{ !contains(github.ref, '-') }}
+    environment: ${{ inputs.environment || 'production' }}
+    env:
+      DGN: ${{ vars.DGN || 'production' }}
+    strategy:
+      matrix:
+        node-version: [20.x]
+    permissions:
+      id-token: write
+      contents: read
+      packages: read
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          persist-credentials: false
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build
-        run: npm run build
-
-      - name: Tests
-        run: npm test --if-present
-
-      - name: Deploy using tag
-        env:
-          RELEASE_TAG: ${{ github.ref_name }}
+      - name: Log AWS CLI Setup (Dummy)
         run: |
-          echo "Deploying production for tag $RELEASE_TAG"
-          # Insert real deploy steps here
+          echo "🔧 Would setup AWS CLI with:"
+          echo "  - Role: ${{ vars.AWS_IAM_ROLE }}"
+          echo "  - Region: ${{ vars.AWS_REGION }}"
+          echo "✅ AWS CLI setup simulation completed!"
 
+      - name: Log Node.js Setup (Dummy)
+        run: |
+          echo "📦 Would setup Node.js version: ${{ matrix.node-version }}"
+          echo "✅ Node.js setup simulation completed!"
+
+      - name: Log Production Deployment (Dummy)
+        env:
+          PACKAGE_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+          SENTRY_AUTH_TOKEN: '${{ secrets.SENTRY_AUTH_TOKEN }}'
+        run: |
+          echo "🚀 Production Deployment Simulation:"
+          echo "  - Environment: ${{ inputs.environment || 'production' }}"
+          echo "  - DGN: ${{ vars.DGN || 'production' }}"
+          echo "  - Tag: ${{ github.ref_name }}"
+          echo "  - Event: ${{ github.event_name }}"
+          echo ""
+          echo "📋 Would execute deployment steps :1 "
+          echo "  1. Setup .npmrc with GitHub package auth"
+          echo "  2. Run: npm ci"
+          echo "  3. Source: scripts/build-configs/lamf-production.config"
+          echo "  4. Execute: sh scripts/deploy.sh"
+          echo ""
+          echo "🔐 Environment variables that would be used:"
+          echo "  - PACKAGE_TOKEN: ${PACKAGE_TOKEN:0:10}..."
+          echo "  - SENTRY_AUTH_TOKEN: ${SENTRY_AUTH_TOKEN:0:10}..."
+          echo "  - AWS_IAM_ROLE: ${{ vars.AWS_IAM_ROLE }}"
+          echo "  - AWS_REGION: ${{ vars.AWS_REGION }}"
+          echo ""
+          echo "✅ Production deployment simulation completed successfully!"
